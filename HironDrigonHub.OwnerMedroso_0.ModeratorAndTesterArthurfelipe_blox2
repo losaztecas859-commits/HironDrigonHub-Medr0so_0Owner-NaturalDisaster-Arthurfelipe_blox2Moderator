@@ -1,0 +1,759 @@
+-- ===== LOAD REDZ LIB =====
+local redzlib = loadstring(game:HttpGet(
+"https://raw.githubusercontent.com/minhdepzai-v/LibraryRobloc/refs/heads/main/RedzLibrary.lua"
+))()
+
+local Window = redzlib:MakeWindow({
+Title = "HironDrigon Rework: NaturalDisaster",
+SubTitle = "by medr0so_0  AND  Arthurfelipe_blox2",
+SaveFolder = "testando | redz lib v5.lua",
+
+Theme = "Dark" -- <<<<<< AQUI, animal
+})
+
+Window:AddMinimizeButton({
+Button = {
+Image = "rbxassetid://115421377734948",
+BackgroundTransparency = 0
+},
+Corner = {
+CornerRadius = UDim.new(35, 1)
+},
+})
+
+-- ===== TAB INFO =====
+local Tab1 = Window:MakeTab({ "Informações do hub e do player", "info" })
+
+Tab1:AddDiscordInvite({
+Name = "HironDrigon",
+Description = "Entrar",
+Logo = "rbxassetid://115421377734948",
+Invite = "https://discord.gg/tk3zEt7jDt",
+Color = Color3.fromRGB(20, 40, 120)
+})
+
+Window:SelectTab(Tab1)
+
+Tab1:AddParagraph({
+"HironDrigon AVISO",
+"Refizemos a versão por causa de bugs. A aba Troll está mais forte, mas o resto ainda é fraco."
+})
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local MarketplaceService = game:GetService("MarketplaceService")
+
+local gameName = "Desconhecido"
+pcall(function()
+gameName = MarketplaceService:GetProductInfo(game.PlaceId).Name
+end)
+
+local executorName = "Desconhecido"
+pcall(function()
+if getexecutorname then
+executorName = getexecutorname()
+elseif identifyexecutor then
+executorName = identifyexecutor()
+end
+end)
+
+Tab1:AddParagraph({
+"Informações do Hub",
+"Creator and programmer: Medr0so_0\nContent creator, Moderation and tester: Arthurfelipe_blox2"
+})
+
+Tab1:AddParagraph({
+"Informações do Player",
+"Nick: " .. player.Name ..
+"\nID: " .. player.UserId ..
+"\nGame: " .. gameName ..
+"\nExecutor: " .. executorName
+})
+
+-- ===== TAB BASICOS =====
+local Tab2 = Window:MakeTab({ "Básicos", "settings" })
+
+local UIS = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
+local humanoid
+local infJumpConnection
+local noclipConn
+
+local function getHumanoid()
+local char = player.Character or player.CharacterAdded:Wait()
+humanoid = char:WaitForChild("Humanoid")
+end
+
+getHumanoid()
+player.CharacterAdded:Connect(getHumanoid)
+
+Tab2:AddSlider({
+Name = "Speed",
+Min = 0,
+Max = 200,
+Default = 16,
+Callback = function(v)
+if humanoid then humanoid.WalkSpeed = v end
+end
+})
+
+Tab2:AddSlider({
+Name = "JumpPower",
+Min = 0,
+Max = 200,
+Default = 50,
+Callback = function(v)
+if humanoid then
+humanoid.UseJumpPower = true
+humanoid.JumpPower = v
+end
+end
+})
+
+Tab2:AddToggle({
+Name = "Infinite Jump",
+Default = false,
+Callback = function(state)
+if state then
+infJumpConnection = UIS.JumpRequest:Connect(function()
+if humanoid then
+humanoid:ChangeState(Enum.HumanoidStateType.Jumping)
+end
+end)
+else
+if infJumpConnection then
+infJumpConnection:Disconnect()
+infJumpConnection = nil
+end
+end
+end
+})
+
+Tab2:AddButton({
+Name = "TP Tool",
+Callback = function()
+local tool = Instance.new("Tool")
+tool.Name = "TP Tool"
+tool.RequiresHandle = false
+tool.Parent = player.Backpack
+
+tool.Activated:Connect(function()
+local mouse = player:GetMouse()
+if mouse and mouse.Hit then
+local char = player.Character
+if char and char:FindFirstChild("HumanoidRootPart") then
+char.HumanoidRootPart.CFrame = mouse.Hit + Vector3.new(0,3,0)
+end
+end
+end)
+end
+
+})
+
+-- ===== Noclip =====
+Tab2:AddToggle({
+Name = "Noclip",
+Default = false,
+Callback = function(state)
+if state then
+noclipConn = RunService.Stepped:Connect(function()
+local char = player.Character
+if not char then return end
+for _, part in pairs(char:GetDescendants()) do
+if part:IsA("BasePart") then
+part.CanCollide = false
+end
+end
+end)
+else
+if noclipConn then
+noclipConn:Disconnect()
+noclipConn = nil
+end
+local char = player.Character
+if char then
+for _, part in pairs(char:GetDescendants()) do
+if part:IsA("BasePart") then
+part.CanCollide = true
+end
+end
+end
+end
+end
+})
+Tab2:AddTextBox({
+Name = "Spin",
+Placeholder = "Digite a velocidade de spin",
+Callback = function(value)
+local speed = tonumber(value)
+if not speed then return end
+
+local char = player.Character
+if not char then return end
+local hrp = char:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+
+if hrp:FindFirstChild("SpinBody") then
+hrp.SpinBody:Destroy()
+end
+
+local spin = Instance.new("BodyAngularVelocity")
+spin.Name = "SpinBody"
+spin.MaxTorque = Vector3.new(math.huge, math.huge, math.huge)
+spin.AngularVelocity = Vector3.new(0, speed, 0)
+spin.Parent = hrp
+
+end
+
+})
+-- ===== ANTI TELEPORTE DEFINITIVO =====
+local antiTPEnabled = false
+local savedCFrame
+local antiTPConn
+local charConn
+local allowNextTP = false
+
+local function setupAntiTP(char)
+if not antiTPEnabled or not savedCFrame then return end
+local hrp = char:WaitForChild("HumanoidRootPart")
+
+if antiTPConn then antiTPConn:Disconnect() end
+antiTPConn = RunService.Heartbeat:Connect(function()
+if not antiTPEnabled or allowNextTP then return end
+if (hrp.Position - savedCFrame.Position).Magnitude > 25 then
+hrp.CFrame = savedCFrame
+end
+end)
+
+end
+
+Tab2:AddToggle({
+Name = "Anti Teleporte",
+Default = false,
+Callback = function(state)
+antiTPEnabled = state
+if state then
+local char = player.Character or player.CharacterAdded:Wait()
+savedCFrame = char:WaitForChild("HumanoidRootPart").CFrame
+setupAntiTP(char)
+
+if charConn then charConn:Disconnect() end
+charConn = player.CharacterAdded:Connect(setupAntiTP)
+else
+if antiTPConn then antiTPConn:Disconnect() antiTPConn = nil end
+if charConn then charConn:Disconnect() charConn = nil end
+end
+end
+
+})
+
+Tab2:AddButton({
+Name = "Atualizar Spawn",
+Callback = function()
+local char = player.Character
+if not char then return end
+local hrp = char:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+savedCFrame = hrp.CFrame
+allowNextTP = true
+task.delay(0.4, function()
+allowNextTP = false
+end)
+end
+})
+Tab2:AddParagraph({
+"AVISO ⚠️",
+"Ao ativar o Anti Teleporte você NÃO vai conseguir usar o ClickFling e o TP Tool.\n" ..
+"Para usar essas funções, desative o Anti Teleporte primeiro."
+})
+-- ===== TAB TROLL =====
+local TabTroll = Window:MakeTab({ "Troll", "skull" })
+
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+
+local SelectedPlayer
+local LoopFling = false
+local FlingSpin
+local ClickFlingTool
+local ClickFlingSpin
+local Flinging = false
+local MAX_DISTANCE = 25
+local noclipConn
+
+local function setNoclip(state)
+if state then
+noclipConn = RunService.Stepped:Connect(function()
+local char = LocalPlayer.Character
+if not char then return end
+for _,p in pairs(char:GetDescendants()) do
+if p:IsA("BasePart") then
+p.CanCollide = false
+end
+end
+end)
+else
+if noclipConn then
+noclipConn:Disconnect()
+noclipConn = nil
+end
+end
+end
+
+local function getPlayerNames()
+local t = {}
+for _,plr in pairs(Players:GetPlayers()) do
+if plr ~= LocalPlayer then
+table.insert(t, plr.Name)
+end
+end
+return t
+end
+
+local PlayerDropdown = TabTroll:AddDropdown({
+Name = "Lista de Players",
+Options = getPlayerNames(),
+Callback = function(v)
+SelectedPlayer = v
+end
+})
+
+TabTroll:AddButton({
+Name = "Atualizar lista",
+Callback = function()
+PlayerDropdown:Set(getPlayerNames())
+end
+})
+
+-- ===== CLICKFLING (ORIGINAL) =====
+local function cleanupClickFling(hum)
+Flinging = false
+setNoclip(false)
+
+if ClickFlingSpin then
+ClickFlingSpin:Destroy()
+ClickFlingSpin = nil
+end
+
+if hum then
+Camera.CameraSubject = hum
+end
+
+end
+
+TabTroll:AddButton({
+Name = "ClickFling",
+Callback = function()
+if ClickFlingTool then
+ClickFlingTool:Destroy()
+ClickFlingTool = nil
+end
+
+local char = LocalPlayer.Character
+if not char then return end
+local hum = char:FindFirstChildOfClass("Humanoid")
+local hrp = char:FindFirstChild("HumanoidRootPart")
+if not hum or not hrp then return end
+
+ClickFlingTool = Instance.new("Tool")
+ClickFlingTool.Name = "fling"
+ClickFlingTool.RequiresHandle = false
+ClickFlingTool.Parent = LocalPlayer.Backpack
+
+ClickFlingTool.Activated:Connect(function()
+if Flinging then return end
+
+local mouse = LocalPlayer:GetMouse()
+if not mouse.Target then return end
+
+local model = mouse.Target:FindFirstAncestorOfClass("Model")
+if not model or model == char then return end
+
+local targetHRP = model:FindFirstChild("HumanoidRootPart")
+local targetHum = model:FindFirstChildOfClass("Humanoid")
+if not targetHRP or not targetHum then return end
+
+Flinging = true
+setNoclip(true)
+
+ClickFlingSpin = Instance.new("BodyAngularVelocity")
+ClickFlingSpin.AngularVelocity = Vector3.new(0, 99999, 0)
+ClickFlingSpin.MaxTorque = Vector3.new(0, math.huge, 0)
+ClickFlingSpin.Parent = hrp
+
+Camera.CameraSubject = targetHum
+
+task.spawn(function()
+while Flinging do
+if hum.FloorMaterial == Enum.Material.Air then break end
+if not targetHRP.Parent then break end
+if (hrp.Position - targetHRP.Position).Magnitude > MAX_DISTANCE then break end
+hrp.CFrame = targetHRP.CFrame
+task.wait(0.1)
+end
+cleanupClickFling(hum)
+end)
+
+end)
+
+hum.Seated:Connect(function(active)
+if active then
+cleanupClickFling(hum)
+if ClickFlingTool then
+ClickFlingTool.Parent = workspace
+ClickFlingTool = nil
+end
+end
+end)
+
+end
+
+})
+
+-- ===== FLING NORMAL =====
+TabTroll:AddToggle({
+Name = "Fling",
+Default = false,
+Callback = function(state)
+local char = LocalPlayer.Character
+if not char then return end
+local hrp = char:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+
+if state then
+setNoclip(true)
+FlingSpin = Instance.new("BodyAngularVelocity")
+FlingSpin.AngularVelocity = Vector3.new(0,200000,0)
+FlingSpin.MaxTorque = Vector3.new(0,math.huge,0)
+FlingSpin.Parent = hrp
+else
+if FlingSpin then FlingSpin:Destroy() FlingSpin=nil end
+setNoclip(false)
+end
+end
+
+})
+
+-- ===== FLING PLAYER / LOOP =====
+local function flingSelected(looped)
+if not SelectedPlayer then return end
+local target = Players:FindFirstChild(SelectedPlayer)
+if not target or not target.Character then return end
+
+local char = LocalPlayer.Character
+local hrp = char and char:FindFirstChild("HumanoidRootPart")
+local thrp = target.Character:FindFirstChild("HumanoidRootPart")
+if not hrp or not thrp then return end
+
+setNoclip(true)
+
+if not FlingSpin then
+FlingSpin = Instance.new("BodyAngularVelocity")
+FlingSpin.AngularVelocity = Vector3.new(0,200000,0)
+FlingSpin.MaxTorque = Vector3.new(0,math.huge,0)
+FlingSpin.Parent = hrp
+end
+
+if looped then
+task.spawn(function()
+while LoopFling do
+if not thrp.Parent then break end
+hrp.CFrame = thrp.CFrame
+task.wait(0.1)
+end
+end)
+else
+hrp.CFrame = thrp.CFrame
+end
+
+end
+
+TabTroll:AddButton({
+Name = "Fling player selecionado",
+Callback = function()
+flingSelected(false)
+end
+})
+
+TabTroll:AddToggle({
+Name = "LoopFling (player selecionado)",
+Default = false,
+Callback = function(state)
+LoopFling = state
+if state then
+flingSelected(true)
+else
+if FlingSpin then FlingSpin:Destroy() FlingSpin=nil end
+setNoclip(false)
+end
+end
+})
+
+-- ===== VIEW TOGGLE (MESMA LISTA) =====
+TabTroll:AddToggle({
+Name = "View Player",
+Default = false,
+Callback = function(state)
+if state then
+if not SelectedPlayer then return end
+local target = Players:FindFirstChild(SelectedPlayer)
+if not target or not target.Character then return end
+
+local hum = target.Character:FindFirstChildOfClass("Humanoid")
+if hum then
+Camera.CameraSubject = hum
+end
+else
+local char = LocalPlayer.Character
+if not char then return end
+
+local hum = char:FindFirstChildOfClass("Humanoid")
+if hum then
+Camera.CameraSubject = hum
+end
+end
+
+end
+
+})
+-- ===== DRONE CAMERA / FREECAM =====
+local DroneEnabled = false
+local DroneCamera
+local DroneSpeed = 50
+local TouchControl = {}
+local TouchPos = Vector2.new(0,0)
+local Rotation = Vector2.new(0,0)
+
+TabTroll:AddToggle({
+Name = "Drone Camera",
+Default = false,
+Callback = function(state)
+local char = LocalPlayer.Character
+local cam = workspace.CurrentCamera
+DroneEnabled = state
+
+if state then
+-- Desativar personagem e ativar freecam
+if char then
+char:FindFirstChild("HumanoidRootPart").Anchored = true
+end
+
+DroneCamera = Instance.new("Camera")
+cam.CameraType = Enum.CameraType.Scriptable
+
+local dronePos = char and char:FindFirstChild("HumanoidRootPart") and char.HumanoidRootPart.Position + Vector3.new(0,5,0) or Vector3.new(0,5,0)
+cam.CFrame = CFrame.new(dronePos)
+
+-- Botões na tela
+local Gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+Gui.Name = "DroneGui"
+
+local function createButton(name, pos, text)
+local btn = Instance.new("TextButton")
+btn.Size = UDim2.new(0,50,0,50)
+btn.Position = pos
+btn.Text = text
+btn.BackgroundColor3 = Color3.fromRGB(30,30,30)
+btn.TextColor3 = Color3.fromRGB(255,255,255)
+btn.Parent = Gui
+return btn
+end
+
+local BtnLeft = createButton("Left", UDim2.new(0,10,0.9,0), "<")
+local BtnRight = createButton("Right", UDim2.new(0,70,0.9,0), ">")
+local BtnUp = createButton("Up", UDim2.new(0,130,0.9,0), "^")
+local BtnDown = createButton("Down", UDim2.new(0,190,0.9,0), "v")
+
+local moveDir = Vector3.new(0,0,0)
+local function updateMove()
+local cf = cam.CFrame
+local forward = cf.LookVector
+local right = cf.RightVector
+cam.CFrame = cf + (forward * moveDir.Z + right * moveDir.X + Vector3.new(0,moveDir.Y,0)) * DroneSpeed * RunService.RenderStepped:Wait()
+end
+
+BtnLeft.MouseButton1Down:Connect(function() moveDir = Vector3.new(-1,0,0) end)
+BtnLeft.MouseButton1Up:Connect(function() moveDir = Vector3.new(0,0,0) end)
+BtnRight.MouseButton1Down:Connect(function() moveDir = Vector3.new(1,0,0) end)
+BtnRight.MouseButton1Up:Connect(function() moveDir = Vector3.new(0,0,0) end)
+BtnUp.MouseButton1Down:Connect(function() moveDir = Vector3.new(0,0,1) end)
+BtnUp.MouseButton1Up:Connect(function() moveDir = Vector3.new(0,0,0) end)
+BtnDown.MouseButton1Down:Connect(function() moveDir = Vector3.new(0,0,-1) end)
+BtnDown.MouseButton1Up:Connect(function() moveDir = Vector3.new(0,0,0) end)
+
+-- Touch / drag para olhar
+local UIS = game:GetService("UserInputService")
+UIS.InputBegan:Connect(function(input)
+if input.UserInputType == Enum.UserInputType.Touch then
+TouchControl[input.UserInputState] = input.Position
+end
+end)
+UIS.InputChanged:Connect(function(input)
+if input.UserInputType == Enum.UserInputType.Touch then
+if TouchControl[input] then
+local delta = input.Position - TouchControl[input]
+local cf = cam.CFrame
+cam.CFrame = cf * CFrame.Angles(0,-delta.X/200,0) * CFrame.Angles(-delta.Y/200,0,0)
+TouchControl[input] = input.Position
+end
+end
+end)
+
+-- Loop de movimento
+RunService.RenderStepped:Connect(function()
+if DroneEnabled then
+local cf = cam.CFrame
+local forward = cf.LookVector
+local right = cf.RightVector
+cam.CFrame = cf + (forward * moveDir.Z + right * moveDir.X + Vector3.new(0,moveDir.Y,0)) * DroneSpeed * RunService.RenderStepped:Wait()
+end
+end)
+
+else
+-- Desativar drone e resetar câmera
+cam.CameraType = Enum.CameraType.Custom
+if char then
+char:FindFirstChild("HumanoidRootPart").Anchored = false
+end
+if player.PlayerGui:FindFirstChild("DroneGui") then
+player.PlayerGui.DroneGui:Destroy()
+end
+end
+
+end
+
+})
+-- ===== INFECÇÃO NOOB =====
+TabTroll:AddButton({
+Name = "Infecção Noob (Todos viram Noob)",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Natural-Disaster-Survival-Fe-Noob-lnfecIon-102967"))()
+end)
+end
+})
+TabTroll:AddButton({
+Name = "Fling player selecionado v2 (melhorado)",
+Callback = function()
+if not SelectedPlayer then return end
+local target = Players:FindFirstChild(SelectedPlayer)
+if not target or not target.Character then return end
+
+local char = LocalPlayer.Character  
+    local hrp = char and char:FindFirstChild("HumanoidRootPart")  
+    local thrp = target.Character:FindFirstChild("HumanoidRootPart")  
+    if not hrp or not thrp then return end  
+
+    -- Ativar Noclip  
+    setNoclip(true)  
+
+    -- Criar Fling se ainda não existir  
+    if not FlingSpin then  
+        FlingSpin = Instance.new("BodyAngularVelocity")  
+        FlingSpin.AngularVelocity = Vector3.new(0,200000,0)  
+        FlingSpin.MaxTorque = Vector3.new(0,math.huge,0)  
+        FlingSpin.Parent = hrp  
+    end  
+
+    -- Teleportar para o player  
+    hrp.CFrame = thrp.CFrame + Vector3.new(0,3,0)  
+
+    -- Esperar 2 segundos e desativar Fling  
+    task.delay(2, function()  
+        if FlingSpin then  
+            FlingSpin:Destroy()  
+            FlingSpin = nil  
+        end  
+        setNoclip(false)  
+    end)  
+end
+
+})
+-- ===== TAB AVANÇADOS =====
+local TabAvancados = Window:MakeTab({
+"Avançados",
+"monitor"
+})
+
+-- ===== GREEN BALLOON (CÓDIGO DIRETO) =====
+TabAvancados:AddButton({
+Name = "Green Balloon (Natural Disaster)",
+Callback = function()
+
+local function createNotif(title, text, icon, duration)
+game.StarterGui:SetCore("SendNotification", {
+Title = title,
+Text = text,
+Icon = icon,
+Duration = duration
+})
+end
+
+local balloon = workspace:FindFirstChild("GreenBalloon", true)
+
+if balloon then
+local balloonClone = balloon:Clone()
+balloonClone.Parent = game:GetService("Players").LocalPlayer.Backpack
+createNotif("garfield", "🎈 balloon successfully stolen!", nil, 5)
+else
+createNotif("garfield", "🎈 there is no balloons.", nil, 5)
+end
+
+end
+
+})
+
+-- ===== FLY (CMD-X / HD ADMIN FLY) =====
+TabAvancados:AddButton({
+Name = "Fly",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet(
+"https://rawscripts.net/raw/Universal-Script-HD-Admin-Fly-60269"
+))()
+end)
+end
+})-- ===== FE Emote =====
+TabAvancados:AddButton({
+Name = "FE Emote",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-7yd7-I-Emote-Script-48024"))()
+end)
+end
+})
+-- ===== TELEKINESES =====
+TabAvancados:AddButton({
+Name = "Telekineses",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-telekineses-14126"))()
+end)
+end
+})
+-- ===== AVISO AO EXECUTAR =====
+Window:Dialog({
+Title = "Aviso do Hub",
+Text = "O hub pode conter alguns erros, caso aconteça reinicie o personagem, e se continuar o erro, relate ele no discord",
+Options = {
+{"OK", function()
+print("Aviso fechado pelo jogador")
+end}
+}
+})-- ===== TAB SCRIPTS =====
+local TabScripts = Window:MakeTab({ "Scripts", "code" })
+
+TabScripts:AddParagraph({
+"Aba em desenvolvimento",
+"Em breve mais scripts aqui."
+})TabScripts:AddButton({
+Name = "Super Ring V4",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet(
+"https://rawscripts.net/raw/Natural-Disaster-Survival-Super-ring-V4-24296"
+))()
+end)
+end
+})
