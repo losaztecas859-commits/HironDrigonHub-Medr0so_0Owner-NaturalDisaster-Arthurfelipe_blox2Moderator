@@ -3,12 +3,27 @@ local redzlib = loadstring(game:HttpGet(
 "https://raw.githubusercontent.com/minhdepzai-v/LibraryRobloc/refs/heads/main/RedzLibrary.lua"
 ))()
 
+redzlib:SetTheme({
+Main = Color3.fromRGB(0, 120, 255),          -- Azul das tabs
+Second = Color3.fromRGB(10, 20, 40),         -- Azul escuro dentro da tab
+Stroke = Color3.fromRGB(0, 80, 160),         -- Borda azul
+Divider = Color3.fromRGB(0, 60, 120),
+
+Text = Color3.fromRGB(255, 255, 255),        -- Letras brancas
+TextDark = Color3.fromRGB(200, 200, 200),
+
+Object = Color3.fromRGB(0, 0, 0),             -- Botões pretos
+ObjectStroke = Color3.fromRGB(30, 30, 30),
+
+Hover = Color3.fromRGB(20, 20, 20),
+Pressed = Color3.fromRGB(40, 40, 40),
+
+})
 local Window = redzlib:MakeWindow({
-Title = "HironDrigon Rework: NaturalDisaster",
+Title = "HironDrigon Hub: NaturalDisaster",
 SubTitle = "by medr0so_0  AND  Arthurfelipe_blox2",
 SaveFolder = "testando | redz lib v5.lua",
 
-Theme = "Dark" -- <<<<<< AQUI, animal
 })
 
 Window:AddMinimizeButton({
@@ -36,7 +51,7 @@ Window:SelectTab(Tab1)
 
 Tab1:AddParagraph({
 "HironDrigon AVISO",
-"Refizemos a versão por causa de bugs. A aba Troll está mais forte, mas o resto ainda é fraco."
+"Script ainda está passando em testes, mas estamos dando o máximo de nós para ser no mínimo útil!"
 })
 
 local Players = game:GetService("Players")
@@ -266,6 +281,59 @@ Tab2:AddParagraph({
 "Ao ativar o Anti Teleporte você NÃO vai conseguir usar o ClickFling e o TP Tool.\n" ..
 "Para usar essas funções, desative o Anti Teleporte primeiro."
 })
+Tab2:AddButton({
+Name = "Teleportar para o Lobby",
+Callback = function()
+local char = player.Character
+if not char then return end
+local hrp = char:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+hrp.CFrame = CFrame.new(-254.5, 194.6, 299.2)
+end
+})
+Tab2:AddButton({
+Name = "Teleportar para Ilha",
+Callback = function()
+local char = player.Character
+if not char then return end
+local hrp = char:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+hrp.CFrame = CFrame.new(-117.2, 47.6, 7.2)
+end
+})
+-- ===== RESET SPEED =====
+Tab2:AddButton({
+Name = "Reset Speed",
+Callback = function()
+if humanoid then
+humanoid.WalkSpeed = 16
+end
+end
+})
+
+-- ===== RESET JUMPPOWER =====
+Tab2:AddButton({
+Name = "Reset JumpPower",
+Callback = function()
+if humanoid then
+humanoid.UseJumpPower = true
+humanoid.JumpPower = 50
+end
+end
+})
+
+-- ===== RESET ALL =====
+Tab2:AddButton({
+Name = "Reset All",
+Callback = function()
+if humanoid then
+humanoid.WalkSpeed = 16
+humanoid.UseJumpPower = true
+humanoid.JumpPower = 50
+end
+end
+})
+
 -- ===== TAB TROLL =====
 local TabTroll = Window:MakeTab({ "Troll", "skull" })
 
@@ -640,36 +708,130 @@ if not SelectedPlayer then return end
 local target = Players:FindFirstChild(SelectedPlayer)
 if not target or not target.Character then return end
 
-local char = LocalPlayer.Character  
-    local hrp = char and char:FindFirstChild("HumanoidRootPart")  
-    local thrp = target.Character:FindFirstChild("HumanoidRootPart")  
-    if not hrp or not thrp then return end  
+local char = LocalPlayer.Character
+local hrp = char and char:FindFirstChild("HumanoidRootPart")
+local thrp = target.Character:FindFirstChild("HumanoidRootPart")
+if not hrp or not thrp then return end
 
-    -- Ativar Noclip  
-    setNoclip(true)  
+-- Ativar Noclip
+setNoclip(true)
 
-    -- Criar Fling se ainda não existir  
-    if not FlingSpin then  
-        FlingSpin = Instance.new("BodyAngularVelocity")  
-        FlingSpin.AngularVelocity = Vector3.new(0,200000,0)  
-        FlingSpin.MaxTorque = Vector3.new(0,math.huge,0)  
-        FlingSpin.Parent = hrp  
-    end  
+-- Criar Fling se ainda não existir
+if not FlingSpin then
+FlingSpin = Instance.new("BodyAngularVelocity")
+FlingSpin.AngularVelocity = Vector3.new(0,200000,0)
+FlingSpin.MaxTorque = Vector3.new(0,math.huge,0)
+FlingSpin.Parent = hrp
+end
 
-    -- Teleportar para o player  
-    hrp.CFrame = thrp.CFrame + Vector3.new(0,3,0)  
+-- Teleportar para o player
+hrp.CFrame = thrp.CFrame + Vector3.new(0,3,0)
 
-    -- Esperar 2 segundos e desativar Fling  
-    task.delay(2, function()  
-        if FlingSpin then  
-            FlingSpin:Destroy()  
-            FlingSpin = nil  
-        end  
-        setNoclip(false)  
-    end)  
+-- Esperar 2 segundos e desativar Fling
+task.delay(2, function()
+if FlingSpin then
+FlingSpin:Destroy()
+FlingSpin = nil
+end
+setNoclip(false)
+end)
+
 end
 
 })
+-- ===== LOOPFLING PLAYER SELECIONADO V2 (FIX REAL) =====
+local LoopFlingV2 = false
+local OriginalCFrame
+local TargetRespawnConn
+local ReturnLoop
+local V2Spin
+
+local function stopLoopFlingV2()
+LoopFlingV2 = false
+
+if TargetRespawnConn then
+TargetRespawnConn:Disconnect()
+TargetRespawnConn = nil
+end
+
+if ReturnLoop then
+task.cancel(ReturnLoop)
+ReturnLoop = nil
+end
+
+if V2Spin then
+V2Spin:Destroy()
+V2Spin = nil
+end
+
+setNoclip(false)
+
+end
+
+local function startLoopFlingV2()
+if not SelectedPlayer then return end
+local target = Players:FindFirstChild(SelectedPlayer)
+if not target then return end
+
+local char = LocalPlayer.Character
+if not char then return end
+local hrp = char:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+
+OriginalCFrame = hrp.CFrame
+setNoclip(true)
+
+-- cria spin exclusivo do V2
+V2Spin = Instance.new("BodyAngularVelocity")
+V2Spin.AngularVelocity = Vector3.new(0,200000,0)
+V2Spin.MaxTorque = Vector3.new(0,math.huge,0)
+V2Spin.Parent = hrp
+
+local function tpToTarget()
+if not LoopFlingV2 then return end
+if not target.Character then return end
+local thrp = target.Character:FindFirstChild("HumanoidRootPart")
+if thrp then
+hrp.CFrame = thrp.CFrame
+end
+end
+
+-- TP inicial
+task.wait(0.2)
+tpToTarget()
+
+-- Quando o alvo renascer → TP + fling de novo
+if TargetRespawnConn then TargetRespawnConn:Disconnect() end
+TargetRespawnConn = target.CharacterAdded:Connect(function()
+task.wait(0.4)
+tpToTarget()
+end)
+
+-- Volta pro lugar original a cada 2s
+ReturnLoop = task.spawn(function()
+while LoopFlingV2 do
+task.wait(2)
+if hrp and OriginalCFrame then
+hrp.CFrame = OriginalCFrame
+end
+end
+end)
+
+end
+
+TabTroll:AddToggle({
+Name = "LoopFling player selecionado v2",
+Default = false,
+Callback = function(state)
+if state then
+LoopFlingV2 = true
+startLoopFlingV2()
+else
+stopLoopFlingV2()
+end
+end
+})
+
 -- ===== TAB AVANÇADOS =====
 local TabAvancados = Window:MakeTab({
 "Avançados",
@@ -732,21 +894,45 @@ loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-telekineses
 end)
 end
 })
+-- ===== FLY GUI V4 =====
+TabAvancados:AddButton({
+Name = "Fly gui v4",
+Callback = function()
+getgenv().rotationSpeed = 1
+getgenv().noclipfly = true
+getgenv().useV3Method = false
+
+loadstring(game:HttpGet(
+"https://raw.githubusercontent.com/linhmcfake/Script/refs/heads/main/FLYGUIV4"
+))()
+end
+
+})
+TabAvancados:AddButton({
+Name = "fly gui carro",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://abre.ai/fly-gui"))()
+end)
+end
+})
+
 -- ===== AVISO AO EXECUTAR =====
 Window:Dialog({
-Title = "Aviso do Hub",
-Text = "O hub pode conter alguns erros, caso aconteça reinicie o personagem, e se continuar o erro, relate ele no discord",
+Title = "HironDrigon Aviso",
+Text = "estamos dando ao maximo para o script ficar bom, mas está sendo produzido por 2 pessoas, então está com poucas funções",
 Options = {
 {"OK", function()
 print("Aviso fechado pelo jogador")
 end}
 }
+
 })-- ===== TAB SCRIPTS =====
-local TabScripts = Window:MakeTab({ "Scripts", "code" })
+local TabScripts = Window:MakeTab({ "exclusivos para natural disaster", "script" })
 
 TabScripts:AddParagraph({
-"Aba em desenvolvimento",
-"Em breve mais scripts aqui."
+"STATUS",
+"scripts exclusivos para Natural Disaster"
 })TabScripts:AddButton({
 Name = "Super Ring V4",
 Callback = function()
@@ -756,4 +942,51 @@ loadstring(game:HttpGet(
 ))()
 end)
 end
+
+})-- ===== AUTO RESET AO EXECUTAR =====
+task.wait(1) -- Aguarda 1 segundo para o script carregar completamente
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+if player and player.Character then
+local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+if humanoid then
+humanoid.Health = 0
+print("Personagem resetado automaticamente!")
+end
+end
+
+-- ===== TAB UNIVERSAIS =====
+local TabUniversais = Window:MakeTab({ "Universais", "globe" })
+
+TabUniversais:AddParagraph({
+"Aba em desenvolvimento",
+"aba em desenvolvimento"
+})TabUniversais:AddButton({
+Name = "Infinite Yield",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-inf-yeld-61578"))()
+end)
+end
 })
+TabUniversais:AddButton({
+Name = "Nameless",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Nameless-admin-v250-script-87765"))()
+end)
+end
+})
+
+-- ===== ANTI EXECUÇÃO EM OUTROS JOGOS =====
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- PlaceId do Natural Disaster Survival
+local NATURAL_DISASTER_PLACEID = 189707
+
+if game.PlaceId ~= NATURAL_DISASTER_PLACEID then
+player:Kick("not game support")
+end
