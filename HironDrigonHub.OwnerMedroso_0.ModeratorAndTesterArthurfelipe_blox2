@@ -73,8 +73,8 @@ end
 end)
 
 Tab1:AddParagraph({
-"Informações do Hub",
-"Creator and programmer: Medr0so_0\nContent creator, Moderation and tester: Arthurfelipe_blox2"
+"Administração",
+"Administradores: Owner: Medr0so_0 - SubOwner: Arthurfelipe_blox2"
 })
 
 Tab1:AddParagraph({
