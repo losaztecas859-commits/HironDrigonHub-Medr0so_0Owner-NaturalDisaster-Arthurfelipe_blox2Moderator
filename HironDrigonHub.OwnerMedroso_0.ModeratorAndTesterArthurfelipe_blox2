@@ -73,8 +73,8 @@ end
 end)
 
 Tab1:AddParagraph({
-"Administração",
-"Administradores: Owner: Medr0so_0 - SubOwner: Arthurfelipe_blox2"
+"Informações do Hub",
+"Creator and programmer: Medr0so_0\nContent creator, Moderation and tester: Arthurfelipe_blox2"
 })
 
 Tab1:AddParagraph({
@@ -894,28 +894,6 @@ loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-telekineses
 end)
 end
 })
--- ===== FLY GUI V4 =====
-TabAvancados:AddButton({
-Name = "Fly gui v4",
-Callback = function()
-getgenv().rotationSpeed = 1
-getgenv().noclipfly = true
-getgenv().useV3Method = false
-
-loadstring(game:HttpGet(
-"https://raw.githubusercontent.com/linhmcfake/Script/refs/heads/main/FLYGUIV4"
-))()
-end
-
-})
-TabAvancados:AddButton({
-Name = "fly gui carro",
-Callback = function()
-pcall(function()
-loadstring(game:HttpGet("https://abre.ai/fly-gui"))()
-end)
-end
-})
 
 -- ===== AVISO AO EXECUTAR =====
 Window:Dialog({
@@ -963,21 +941,6 @@ local TabUniversais = Window:MakeTab({ "Universais", "globe" })
 TabUniversais:AddParagraph({
 "Aba em desenvolvimento",
 "aba em desenvolvimento"
-})TabUniversais:AddButton({
-Name = "Infinite Yield",
-Callback = function()
-pcall(function()
-loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-inf-yeld-61578"))()
-end)
-end
-})
-TabUniversais:AddButton({
-Name = "Nameless",
-Callback = function()
-pcall(function()
-loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Nameless-admin-v250-script-87765"))()
-end)
-end
 })
 
 -- ===== ANTI EXECUÇÃO EM OUTROS JOGOS =====
