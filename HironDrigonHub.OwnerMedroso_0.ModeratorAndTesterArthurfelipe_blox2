@@ -46,12 +46,13 @@ Logo = "rbxassetid://115421377734948",
 Invite = "https://discord.gg/tk3zEt7jDt",
 Color = Color3.fromRGB(20, 40, 120)
 })
-
+-- ===== CRIAR SECTION =====
+Tab1:AddSection("aviso")
 Window:SelectTab(Tab1)
 
 Tab1:AddParagraph({
 "HironDrigon AVISO",
-"Script ainda está passando em testes, mas estamos dando o máximo de nós para ser no mínimo útil!"
+"novidades: opções novas na aba Universais,  mais organizado. "
 })
 
 local Players = game:GetService("Players")
@@ -71,12 +72,14 @@ elseif identifyexecutor then
 executorName = identifyexecutor()
 end
 end)
-
+-- ===== CRIAR SECTION =====
+Tab1:AddSection("criadores")
 Tab1:AddParagraph({
 "Informações do Hub",
 "Creator and programmer: Medr0so_0\nContent creator, Moderation and tester: Arthurfelipe_blox2"
 })
-
+-- ===== CRIAR SECTION =====
+Tab1:AddSection("Informação de quem ta usando")
 Tab1:AddParagraph({
 "Informações do Player",
 "Nick: " .. player.Name ..
@@ -101,7 +104,8 @@ end
 
 getHumanoid()
 player.CharacterAdded:Connect(getHumanoid)
-
+-- ===== CRIAR SECTION =====
+Tab2:AddSection("Básicos")
 Tab2:AddSlider({
 Name = "Speed",
 Min = 0,
@@ -221,6 +225,8 @@ spin.Parent = hrp
 end
 
 })
+-- ===== CRIAR SECTION =====
+Tab2:AddSection("teleporte")
 -- ===== ANTI TELEPORTE DEFINITIVO =====
 local antiTPEnabled = false
 local savedCFrame
@@ -301,6 +307,8 @@ if not hrp then return end
 hrp.CFrame = CFrame.new(-117.2, 47.6, 7.2)
 end
 })
+-- ===== CRIAR SECTION =====
+Tab2:AddSection("opções de resetar")
 -- ===== RESET SPEED =====
 Tab2:AddButton({
 Name = "Reset Speed",
@@ -393,7 +401,6 @@ Callback = function()
 PlayerDropdown:Set(getPlayerNames())
 end
 })
-
 -- ===== CLICKFLING (ORIGINAL) =====
 local function cleanupClickFling(hum)
 Flinging = false
@@ -409,6 +416,8 @@ Camera.CameraSubject = hum
 end
 
 end
+-- ===== CRIAR SECTION =====
+TabTroll:AddSection("flings normais")
 
 TabTroll:AddButton({
 Name = "ClickFling",
@@ -482,6 +491,7 @@ end
 -- ===== FLING NORMAL =====
 TabTroll:AddToggle({
 Name = "Fling",
+SubTitle = "empurre os jogadores para fora do mapa!",
 Default = false,
 Callback = function(state)
 local char = LocalPlayer.Character
@@ -536,7 +546,8 @@ hrp.CFrame = thrp.CFrame
 end
 
 end
-
+-- ===== CRIAR SECTION =====
+TabTroll:AddSection("opções de jogador selecionado")
 TabTroll:AddButton({
 Name = "Fling player selecionado",
 Callback = function()
@@ -592,7 +603,8 @@ local DroneSpeed = 50
 local TouchControl = {}
 local TouchPos = Vector2.new(0,0)
 local Rotation = Vector2.new(0,0)
-
+-- ===== CRIAR SECTION =====
+TabTroll:AddSection("Drone")
 TabTroll:AddToggle({
 Name = "Drone Camera",
 Default = false,
@@ -692,6 +704,8 @@ end
 end
 
 })
+-- ===== CRIAR SECTION =====
+TabTroll:AddSection("diversão")
 -- ===== INFECÇÃO NOOB =====
 TabTroll:AddButton({
 Name = "Infecção Noob (Todos viram Noob)",
@@ -701,6 +715,8 @@ loadstring(game:HttpGet("https://rawscripts.net/raw/Natural-Disaster-Survival-Fe
 end)
 end
 })
+-- ===== CRIAR SECTION =====
+TabTroll:AddSection("Opções melhoradas")
 TabTroll:AddButton({
 Name = "Fling player selecionado v2 (melhorado)",
 Callback = function()
@@ -837,7 +853,7 @@ local TabAvancados = Window:MakeTab({
 "Avançados",
 "monitor"
 })
-
+TabAvancados:AddSection("Itens")
 -- ===== GREEN BALLOON (CÓDIGO DIRETO) =====
 TabAvancados:AddButton({
 Name = "Green Balloon (Natural Disaster)",
@@ -865,7 +881,7 @@ end
 end
 
 })
-
+TabAvancados:AddSection("Outros")
 -- ===== FLY (CMD-X / HD ADMIN FLY) =====
 TabAvancados:AddButton({
 Name = "Fly",
@@ -942,7 +958,30 @@ TabUniversais:AddParagraph({
 "Aba em desenvolvimento",
 "aba em desenvolvimento"
 })
-
+TabUniversais:AddButton({
+Name = "Infinite yield",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-inf-yeld-61578"))()
+end)
+end
+})
+TabUniversais:AddButton({
+Name = "Nameless Admin",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Nameless-admin-111753"))()
+end)
+end
+})
+TabUniversais:AddButton({
+Name = "Tiger X",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Tiger-X-78475"))()
+end)
+end
+})
 -- ===== ANTI EXECUÇÃO EM OUTROS JOGOS =====
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
