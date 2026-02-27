@@ -910,7 +910,14 @@ loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-telekineses
 end)
 end
 })
-
+TabAvancados:AddButton({
+Name = "Fly Gui V3",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Fly-Gui-V3-59173"))()
+end)
+end
+})
 -- ===== AVISO AO EXECUTAR =====
 Window:Dialog({
 Title = "HironDrigon Aviso",
@@ -923,11 +930,8 @@ end}
 
 })-- ===== TAB SCRIPTS =====
 local TabScripts = Window:MakeTab({ "exclusivos para natural disaster", "script" })
-
-TabScripts:AddParagraph({
-"STATUS",
-"scripts exclusivos para Natural Disaster"
-})TabScripts:AddButton({
+TabScripts:AddSection("Scripts exclusivos para Natural Disaster")
+TabScripts:AddButton({
 Name = "Super Ring V4",
 Callback = function()
 pcall(function()
@@ -936,7 +940,22 @@ loadstring(game:HttpGet(
 ))()
 end)
 end
-
+})
+TabScripts:AddButton({
+Name = "Axomic",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Natural-Disaster-Survival-Axomic-Natural-Disasters-Script-112924"))()
+end)
+end
+})
+TabScripts:AddButton({
+Name = "Saturn Hub",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Natural-Disaster-Survival-Sarturn-hub-NDS-116064"))()
+end)
+end
 })-- ===== AUTO RESET AO EXECUTAR =====
 task.wait(1) -- Aguarda 1 segundo para o script carregar completamente
 
@@ -952,12 +971,9 @@ end
 end
 
 -- ===== TAB UNIVERSAIS =====
-local TabUniversais = Window:MakeTab({ "Universais", "globe" })
-
-TabUniversais:AddParagraph({
-"Aba em desenvolvimento",
-"aba em desenvolvimento"
+local TabUniversais = Window:MakeTab({ "Universais", "globe"
 })
+TabUniversais:AddSection("SCRIPTS UNIVERSAIS")
 TabUniversais:AddButton({
 Name = "Infinite yield",
 Callback = function()
@@ -979,6 +995,22 @@ Name = "Tiger X",
 Callback = function()
 pcall(function()
 loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Tiger-X-78475"))()
+end)
+end
+})
+TabUniversais:AddButton({
+Name = "System broken",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-System-Broken-94677"))()
+end)
+end
+})
+TabUniversais:AddButton({
+Name = "Coquette Hub Chat",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Chat-Coquette-106124"))()
 end)
 end
 })
