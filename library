@@ -1,0 +1,144 @@
+-- HiroCmd Library
+local HiroCmd = {}
+HiroCmd.__index = HiroCmd
+
+function HiroCmd:Create(config)
+    local self = setmetatable({}, HiroCmd)
+
+    self.Title = config.Title or "Hiro Window"
+    self.SubTitle = config.SubTitle or "SubTitle"
+    self.Color = config.Color or Color3.fromRGB(0,170,255)
+    self.Prefix = config.Prefix or ";"
+    self.Commands = {}
+
+    local Players = game:GetService("Players")
+    local LocalPlayer = Players.LocalPlayer
+
+    -- GUI
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "HiroCmdUI"
+    ScreenGui.ResetOnSpawn = false
+    ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+    local Main = Instance.new("Frame")
+    Main.Size = UDim2.new(0,350,0,200)
+    Main.Position = UDim2.new(0.5,-175,0.5,-100)
+    Main.BackgroundColor3 = Color3.fromRGB(20,20,20)
+    Main.Parent = ScreenGui
+    Main.Active = true
+    Main.Draggable = true
+
+    local Stroke = Instance.new("UIStroke")
+    Stroke.Color = self.Color
+    Stroke.Thickness = 2
+    Stroke.Parent = Main
+
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Size = UDim2.new(1,0,0,30)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.Text = self.Title.." | "..self.SubTitle
+    TitleLabel.TextColor3 = Color3.new(1,1,1)
+    TitleLabel.Font = Enum.Font.SourceSansBold
+    TitleLabel.TextSize = 18
+    TitleLabel.Parent = Main
+
+    local CommandBox = Instance.new("TextBox")
+    CommandBox.Size = UDim2.new(1,-10,0,30)
+    CommandBox.Position = UDim2.new(0,5,1,-35)
+    CommandBox.BackgroundColor3 = Color3.fromRGB(30,30,30)
+    CommandBox.TextColor3 = Color3.new(1,1,1)
+    CommandBox.PlaceholderText = "Digite comando..."
+    CommandBox.BorderSizePixel = 0
+    CommandBox.Parent = Main
+
+    -- NOTIFY
+    local function Notify(text, success)
+        local Frame = Instance.new("Frame")
+        Frame.Size = UDim2.new(0,250,0,35)
+        Frame.Position = UDim2.new(1,-260,1,-60)
+        Frame.BackgroundColor3 = success and self.Color or Color3.fromRGB(150,0,0)
+        Frame.Parent = ScreenGui
+
+        local Txt = Instance.new("TextLabel")
+        Txt.Size = UDim2.new(1,0,1,0)
+        Txt.BackgroundTransparency = 1
+        Txt.Text = text
+        Txt.TextColor3 = Color3.new(1,1,1)
+        Txt.Font = Enum.Font.SourceSansBold
+        Txt.TextSize = 16
+        Txt.Parent = Frame
+
+        task.delay(2,function()
+            Frame:Destroy()
+        end)
+    end
+
+    -- EXECUTE
+    function self:Execute(text)
+        if text:sub(1,1) ~= self.Prefix then
+            Notify("Prefixo errado", false)
+            return
+        end
+
+        local args = text:split(" ")
+        local cmd = args[1]:sub(2):lower()
+
+        if self.Commands[cmd] then
+            pcall(function()
+                self.Commands[cmd](args)
+            end)
+            Notify(cmd.." executado", true)
+        else
+            Notify("Comando não existe", false)
+        end
+    end
+
+    -- TEXTBOX
+    CommandBox.FocusLost:Connect(function(enter)
+        if enter and CommandBox.Text ~= "" then
+            self:Execute(CommandBox.Text)
+            CommandBox.Text = ""
+        end
+    end)
+
+    -- CHAT
+    LocalPlayer.Chatted:Connect(function(msg)
+        if msg:sub(1,1) == self.Prefix then
+            self:Execute(msg)
+        end
+    end)
+
+    -- ADD COMMAND
+    function self:AddCommand(name, callback)
+        self.Commands[name:lower()] = callback
+    end
+
+    -- REMOVE COMMAND
+    function self:RemoveCommand(name)
+        self.Commands[name:lower()] = nil
+    end
+
+    -- UPDATE TITLE
+    function self:SetTitle(newTitle)
+        self.Title = newTitle
+        TitleLabel.Text = self.Title.." | "..self.SubTitle
+    end
+
+    function self:SetSubTitle(newSub)
+        self.SubTitle = newSub
+        TitleLabel.Text = self.Title.." | "..self.SubTitle
+    end
+
+    function self:SetColor(newColor)
+        self.Color = newColor
+        Stroke.Color = newColor
+    end
+
+    function self:SetPrefix(newPrefix)
+        self.Prefix = newPrefix
+    end
+
+    return self
+end
+
+return HiroCmd
