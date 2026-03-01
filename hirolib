@@ -1,0 +1,197 @@
+-- =========================================
+-- HIRO LIB - Custom Admin UI Base
+-- Criado por Otávio (o brabo)
+-- =========================================
+
+local HiroLib = {}
+
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+
+local LocalPlayer = Players.LocalPlayer
+
+-- CONFIG PADRÃO
+local FULL_SIZE = UDim2.new(0,300,0,300)
+local COLLAPSED_SIZE = UDim2.new(0,300,0,30)
+
+function HiroLib:CreateWindow(config)
+
+	config = config or {}
+
+	local WindowName = config.Name or "HiroWindow"
+	local SubTitleText = config.SubTitle or ""
+
+	-- GUI
+	local ScreenGui = Instance.new("ScreenGui")
+	ScreenGui.Name = "HiroLibUI"
+	ScreenGui.ResetOnSpawn = false
+	ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+
+	local MenuFrame = Instance.new("Frame")
+	MenuFrame.Size = FULL_SIZE
+	MenuFrame.Position = UDim2.new(0.5,-150,0.5,-150)
+	MenuFrame.BackgroundColor3 = Color3.fromRGB(0,0,0)
+	MenuFrame.BorderSizePixel = 0
+	MenuFrame.Parent = ScreenGui
+	MenuFrame.Active = true
+	MenuFrame.ClipsDescendants = true
+
+	-- BORDA AZUL ANIMADA
+	local Border = Instance.new("UIStroke")
+	Border.Thickness = 3
+	Border.Color = Color3.fromRGB(0,120,255)
+	Border.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	Border.Parent = MenuFrame
+
+	task.spawn(function()
+		local t = 0
+		while MenuFrame.Parent do
+			t += 0.05
+			Border.Color = Color3.fromRGB(0,120 + math.sin(t)*60,255)
+			task.wait(0.02)
+		end
+	end)
+
+	-- TOP BAR
+	local TopBar = Instance.new("Frame")
+	TopBar.Size = UDim2.new(1,0,0,30)
+	TopBar.BackgroundTransparency = 1
+	TopBar.Parent = MenuFrame
+
+	local Title = Instance.new("TextLabel")
+	Title.Size = UDim2.new(0.6,0,1,0)
+	Title.BackgroundTransparency = 1
+	Title.Text = WindowName
+	Title.TextColor3 = Color3.new(1,1,1)
+	Title.Font = Enum.Font.SourceSansBold
+	Title.TextSize = 20
+	Title.TextXAlignment = Enum.TextXAlignment.Left
+	Title.Parent = TopBar
+
+	local SubTitle = Instance.new("TextLabel")
+	SubTitle.Size = UDim2.new(0.4,0,1,0)
+	SubTitle.Position = UDim2.new(0.6,0,0,0)
+	SubTitle.BackgroundTransparency = 1
+	SubTitle.Text = SubTitleText
+	SubTitle.TextColor3 = Color3.fromRGB(0,120,255)
+	SubTitle.Font = Enum.Font.SourceSans
+	SubTitle.TextSize = 16
+	SubTitle.TextXAlignment = Enum.TextXAlignment.Right
+	SubTitle.Parent = TopBar
+
+	local CloseBtn = Instance.new("TextButton")
+	CloseBtn.Size = UDim2.new(0,30,0,30)
+	CloseBtn.Position = UDim2.new(1,-30,0,0)
+	CloseBtn.Text = "X"
+	CloseBtn.TextColor3 = Color3.fromRGB(255,0,0)
+	CloseBtn.BackgroundTransparency = 1
+	CloseBtn.Parent = TopBar
+
+	local MinBtn = Instance.new("TextButton")
+	MinBtn.Size = UDim2.new(0,30,0,30)
+	MinBtn.Position = UDim2.new(1,-60,0,0)
+	MinBtn.Text = "-"
+	MinBtn.TextColor3 = Color3.fromRGB(0,120,255)
+	MinBtn.BackgroundTransparency = 1
+	MinBtn.Parent = TopBar
+
+	-- BODY
+	local BodyFrame = Instance.new("Frame")
+	BodyFrame.Size = UDim2.new(1,0,1,-30)
+	BodyFrame.Position = UDim2.new(0,0,0,30)
+	BodyFrame.BackgroundTransparency = 1
+	BodyFrame.Parent = MenuFrame
+
+	local CommandList = Instance.new("ScrollingFrame")
+	CommandList.Size = UDim2.new(1,0,1,0)
+	CommandList.CanvasSize = UDim2.new(0,0,0,0)
+	CommandList.ScrollBarThickness = 6
+	CommandList.BackgroundTransparency = 1
+	CommandList.Parent = BodyFrame
+
+	local UIList = Instance.new("UIListLayout")
+	UIList.Padding = UDim.new(0,5)
+	UIList.Parent = CommandList
+
+	-- DRAG SYSTEM
+	local Dragging = false
+	local DragOffset
+
+	TopBar.InputBegan:Connect(function(i)
+		if i.UserInputType == Enum.UserInputType.MouseButton1 then
+			Dragging = true
+			DragOffset = i.Position - MenuFrame.AbsolutePosition
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(i)
+		if Dragging and i.UserInputType == Enum.UserInputType.MouseMovement then
+			MenuFrame.Position = UDim2.new(
+				0,
+				i.Position.X - DragOffset.X,
+				0,
+				i.Position.Y - DragOffset.Y
+			)
+		end
+	end)
+
+	TopBar.InputEnded:Connect(function(i)
+		if i.UserInputType == Enum.UserInputType.MouseButton1 then
+			Dragging = false
+		end
+	end)
+
+	-- MINIMIZE / CLOSE
+	local Collapsed = false
+
+	CloseBtn.MouseButton1Click:Connect(function()
+		ScreenGui:Destroy()
+	end)
+
+	MinBtn.MouseButton1Click:Connect(function()
+		Collapsed = not Collapsed
+		if Collapsed then
+			BodyFrame.Visible = false
+			MenuFrame.Size = COLLAPSED_SIZE
+		else
+			BodyFrame.Visible = true
+			MenuFrame.Size = FULL_SIZE
+		end
+	end)
+
+	-- FUNÇÕES DA LIB
+	local Window = {}
+
+	function Window:AddCommand(text)
+		local l = Instance.new("TextLabel")
+		l.Size = UDim2.new(1,-10,0,25)
+		l.BackgroundTransparency = 1
+		l.TextColor3 = Color3.new(1,1,1)
+		l.Font = Enum.Font.SourceSansBold
+		l.TextSize = 18
+		l.TextXAlignment = Enum.TextXAlignment.Left
+		l.Text = text
+		l.Parent = CommandList
+
+		CommandList.CanvasSize = UDim2.new(0,0,0,UIList.AbsoluteContentSize.Y)
+		return l
+	end
+
+	function Window:RemoveCommand(label)
+		if label then
+			label:Destroy()
+		end
+	end
+
+	function Window:SetTitle(newName)
+		Title.Text = newName
+	end
+
+	function Window:SetSubTitle(newSub)
+		SubTitle.Text = newSub
+	end
+
+	return Window
+end
+
+return HiroLib
