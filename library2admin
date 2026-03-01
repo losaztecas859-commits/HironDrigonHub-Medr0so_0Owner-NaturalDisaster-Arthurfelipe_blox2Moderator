@@ -1,0 +1,357 @@
+-- ===============================================
+-- HIRODRAGOON ADMIN UI LIBRARY
+-- Versão: 2.0 (Refatorada como Library)
+-- ===============================================
+
+local AdminUILibrary = {}
+AdminUILibrary.__index = AdminUILibrary
+
+-- Configuração padrão
+local DEFAULT_CONFIG = {
+	Title = "HiroDragon",
+	Subtitle = "Admin UI",
+	MenuSize = UDim2.new(0, 300, 0, 300),
+	MenuPosition = UDim2.new(0.5, -150, 0.5, -150),
+	Prefix = ";",
+	Theme = {
+		Primary = Color3.fromRGB(0, 0, 0),
+		Secondary = Color3.fromRGB(0, 0, 50),
+		Text = Color3.fromRGB(255, 255, 255),
+		Accent = Color3.fromRGB(0, 170, 255)
+	}
+}
+
+-- Cria nova instância da library
+function AdminUILibrary.new(config)
+	local self = setmetatable({}, AdminUILibrary)
+	
+	-- Merge com config padrão
+	self.config = DEFAULT_CONFIG
+	if config then
+		for k, v in pairs(config) do
+			if type(v) == "table" and type(self.config[k]) == "table" then
+				for k2, v2 in pairs(v) do
+					self.config[k][k2] = v2
+				end
+			else
+				self.config[k] = v
+			end
+		end
+	end
+	
+	-- Inicializar tabelas
+	self.Commands = {}
+	self.UI = {}
+	self.Players = game:GetService("Players")
+	self.LocalPlayer = self.Players.LocalPlayer
+	self.UserInputService = game:GetService("UserInputService")
+	self.RunService = game:GetService("RunService")
+	self.TweenService = game:GetService("TweenService")
+	self.Workspace = game:GetService("Workspace")
+	self.StarterPack = game:GetService("StarterPack")
+	self.SoundService = game:GetService("SoundService")
+	
+	self.Dragging = false
+	self.DragOffset = Vector2.new(0, 0)
+	self.MenuVisible = true
+	
+	return self
+end
+
+-- Adicionar comando
+function AdminUILibrary:AddCommand(name, callback, description)
+	description = description or "Sem descrição"
+	self.Commands[name:lower()] = {
+		callback = callback,
+		description = description
+	}
+	print("✅ Comando adicionado: " .. name)
+end
+
+-- Remover comando
+function AdminUILibrary:RemoveCommand(name)
+	if self.Commands[name:lower()] then
+		self.Commands[name:lower()] = nil
+		print("❌ Comando removido: " .. name)
+		return true
+	end
+	print("⚠️ Comando não encontrado: " .. name)
+	return false
+end
+
+-- Listar todos os comandos
+function AdminUILibrary:ListCommands()
+	local list = {}
+	for name, data in pairs(self.Commands) do
+		table.insert(list, self.config.Prefix .. name)
+	end
+	return list
+end
+
+-- Obter jogador por nome
+function AdminUILibrary:GetPlayer(name)
+	name = name:lower()
+	for _, plr in pairs(self.Players:GetPlayers()) do
+		if plr.Name:lower():sub(1, #name) == name then
+			return plr
+		end
+	end
+	return nil
+end
+
+-- Notificação
+function AdminUILibrary:Notify(title, text)
+	warn(title .. ": " .. text)
+end
+
+-- Executar comando
+function AdminUILibrary:ExecuteCommand(text)
+	local args = text:split(" ")
+	local cmd = args[1]:lower()
+	
+	-- Remove prefixo
+	if cmd:sub(1, 1) == self.config.Prefix then
+		cmd = cmd:sub(2)
+	end
+	
+	if self.Commands[cmd] then
+		local success, err = pcall(function()
+			self.Commands[cmd].callback(self, table.unpack(args, 2))
+		end)
+		
+		if success then
+			self:Notify("Sucesso", cmd .. " executado")
+		else
+			self:Notify("Erro", err)
+		end
+	else
+		self:Notify("Erro", "Comando não encontrado: " .. cmd)
+	end
+end
+
+-- Criar UI
+function AdminUILibrary:CreateUI()
+	-- ScreenGui principal
+	local ScreenGui = Instance.new("ScreenGui")
+	ScreenGui.Name = "AdminUILibrary"
+	ScreenGui.ResetOnSpawn = false
+	ScreenGui.Parent = self.LocalPlayer:WaitForChild("PlayerGui")
+	self.UI.ScreenGui = ScreenGui
+	
+	-- MenuFrame
+	local MenuFrame = Instance.new("Frame")
+	MenuFrame.Size = self.config.MenuSize
+	MenuFrame.Position = self.config.MenuPosition
+	MenuFrame.AnchorPoint = Vector2.new(0, 0)
+	MenuFrame.BackgroundColor3 = self.config.Theme.Primary
+	MenuFrame.BorderSizePixel = 0
+	MenuFrame.Parent = ScreenGui
+	MenuFrame.ClipsDescendants = true
+	MenuFrame.Active = true
+	self.UI.MenuFrame = MenuFrame
+	
+	-- Gradiente
+	local Gradient = Instance.new("UIGradient")
+	Gradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, self.config.Theme.Primary),
+		ColorSequenceKeypoint.new(1, self.config.Theme.Secondary)
+	}
+	Gradient.Rotation = 90
+	Gradient.Parent = MenuFrame
+	
+	-- Borda
+	local Border = Instance.new("UIStroke")
+	Border.Thickness = 2
+	Border.Parent = MenuFrame
+	Border.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	Border.LineJoinMode = Enum.LineJoinMode.Round
+	self.UI.Border = Border
+	
+	-- TopBar
+	local TopBar = Instance.new("Frame")
+	TopBar.Size = UDim2.new(1, 0, 0, 30)
+	TopBar.BackgroundTransparency = 1
+	TopBar.Parent = MenuFrame
+	
+	-- Título
+	local MenuTitle = Instance.new("TextLabel")
+	MenuTitle.Size = UDim2.new(1, -60, 1, 0)
+	MenuTitle.Position = UDim2.new(0, 0, 0, 0)
+	MenuTitle.BackgroundTransparency = 1
+	MenuTitle.Text = self.config.Title
+	MenuTitle.TextColor3 = self.config.Theme.Text
+	MenuTitle.Font = Enum.Font.SourceSansBold
+	MenuTitle.TextSize = 20
+	MenuTitle.TextXAlignment = Enum.TextXAlignment.Left
+	MenuTitle.TextYAlignment = Enum.TextYAlignment.Center
+	MenuTitle.Parent = TopBar
+	
+	-- Botão Fechar
+	local CloseBtn = Instance.new("TextButton")
+	CloseBtn.Size = UDim2.new(0, 30, 0, 30)
+	CloseBtn.Position = UDim2.new(1, -30, 0, 0)
+	CloseBtn.Text = "X"
+	CloseBtn.TextColor3 = Color3.fromRGB(255, 0, 0)
+	CloseBtn.BackgroundTransparency = 1
+	CloseBtn.Parent = TopBar
+	
+	CloseBtn.MouseButton1Click:Connect(function()
+		MenuFrame.Visible = false
+	end)
+	
+	-- Botão Minimizar
+	local MinimizeBtn = Instance.new("TextButton")
+	MinimizeBtn.Size = UDim2.new(0, 30, 0, 30)
+	MinimizeBtn.Position = UDim2.new(1, -60, 0, 0)
+	MinimizeBtn.Text = "-"
+	MinimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 0)
+	MinimizeBtn.BackgroundTransparency = 1
+	MinimizeBtn.Parent = TopBar
+	
+	local BodyVisible = true
+	MinimizeBtn.MouseButton1Click:Connect(function()
+		BodyVisible = not BodyVisible
+		self.UI.BodyFrame.Visible = BodyVisible
+	end)
+	
+	-- BodyFrame
+	local BodyFrame = Instance.new("Frame")
+	BodyFrame.Size = UDim2.new(1, 0, 1, -30)
+	BodyFrame.Position = UDim2.new(0, 0, 0, 30)
+	BodyFrame.BackgroundTransparency = 1
+	BodyFrame.Parent = MenuFrame
+	self.UI.BodyFrame = BodyFrame
+	
+	-- TextBox de comandos
+	local CommandBox = Instance.new("TextBox")
+	CommandBox.Size = UDim2.new(1, -10, 0, 30)
+	CommandBox.Position = UDim2.new(0, 5, 0, 0)
+	CommandBox.PlaceholderText = "Digite um comando..."
+	CommandBox.TextColor3 = self.config.Theme.Text
+	CommandBox.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	CommandBox.BorderSizePixel = 0
+	CommandBox.Parent = BodyFrame
+	self.UI.CommandBox = CommandBox
+	
+	-- ScrollingFrame para lista de comandos
+	local CommandListFrame = Instance.new("ScrollingFrame")
+	CommandListFrame.Size = UDim2.new(1, 0, 1, -35)
+	CommandListFrame.Position = UDim2.new(0, 0, 0, 35)
+	CommandListFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+	CommandListFrame.ScrollBarThickness = 6
+	CommandListFrame.BackgroundTransparency = 1
+	CommandListFrame.Parent = BodyFrame
+	self.UI.CommandListFrame = CommandListFrame
+	
+	local UIListLayout = Instance.new("UIListLayout")
+	UIListLayout.Padding = UDim.new(0, 5)
+	UIListLayout.Parent = CommandListFrame
+	self.UI.UIListLayout = UIListLayout
+	
+	-- Função para adicionar label de comando na UI
+	local function AddCommandLabel(text)
+		local label = Instance.new("TextLabel")
+		label.Size = UDim2.new(1, -10, 0, 25)
+		label.BackgroundTransparency = 1
+		label.TextColor3 = self.config.Theme.Text
+		label.Font = Enum.Font.SourceSansBold
+		label.TextSize = 18
+		label.Text = text
+		label.TextXAlignment = Enum.TextXAlignment.Left
+		label.Parent = CommandListFrame
+		CommandListFrame.CanvasSize = UDim2.new(0, 0, 0, UIListLayout.AbsoluteContentSize.Y)
+	end
+	
+	self.UI.AddCommandLabel = AddCommandLabel
+	
+	-- Atualizar lista de comandos
+	self:UpdateCommandList()
+	
+	-- Executar comando ao pressionar Enter
+	CommandBox.FocusLost:Connect(function(enterPressed)
+		if enterPressed then
+			self:ExecuteCommand(CommandBox.Text)
+			CommandBox.Text = ""
+		end
+	end)
+	
+	-- Sistema de Drag
+	TopBar.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			self.Dragging = true
+			self.DragOffset = input.Position - MenuFrame.AbsolutePosition
+		end
+	end)
+	
+	TopBar.InputEnded:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 then
+			self.Dragging = false
+		end
+	end)
+	
+	self.UserInputService.InputChanged:Connect(function(input)
+		if self.Dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+			MenuFrame.Position = UDim2.new(0, input.Position.X - self.DragOffset.X, 0, input.Position.Y - self.DragOffset.Y)
+		end
+	end)
+	
+	-- Bola flutuante para toggle
+	local Ball = Instance.new("TextButton")
+	Ball.Size = UDim2.new(0, 40, 0, 40)
+	Ball.Position = UDim2.new(0, 50, 0, 100)
+	Ball.Text = "cmd"
+	Ball.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+	Ball.BackgroundTransparency = 0.3
+	Ball.TextColor3 = self.config.Theme.Text
+	Ball.BorderSizePixel = 2
+	Ball.Parent = ScreenGui
+	Ball.ZIndex = 10
+	
+	Ball.MouseButton1Click:Connect(function()
+		self.MenuVisible = not self.MenuVisible
+		MenuFrame.Visible = self.MenuVisible
+	end)
+	
+	-- Animação de bordas
+	self:AnimateBorder()
+	
+	print("✅ UI Criada com sucesso!")
+end
+
+-- Atualizar lista de comandos na UI
+function AdminUILibrary:UpdateCommandList()
+	if not self.UI.CommandListFrame then return end
+	
+	-- Limpar lista antiga
+	for _, child in ipairs(self.UI.CommandListFrame:GetChildren()) do
+		if child:IsA("TextLabel") then
+			child:Destroy()
+		end
+	end
+	
+	-- Adicionar novos comandos
+	for name in pairs(self.Commands) do
+		self.UI.AddCommandLabel(self.config.Prefix .. name)
+	end
+end
+
+-- Animar bordas
+function AdminUILibrary:AnimateBorder()
+	self.RunService.RenderStepped:Connect(function()
+		if self.UI.Border then
+			local hue = (tick() * 100) % 360
+			self.UI.Border.Color = Color3.fromHSV(0.6, 0.8, 0.5 + 0.5 * math.sin(hue / 180 * math.pi))
+		end
+	end)
+end
+
+-- Conectar chat
+function AdminUILibrary:ConnectChat()
+	self.LocalPlayer.Chatted:Connect(function(msg)
+		if msg:sub(1, 1) == self.config.Prefix then
+			self:ExecuteCommand(msg)
+		end
+	end)
+end
+
+return AdminUILibrary
