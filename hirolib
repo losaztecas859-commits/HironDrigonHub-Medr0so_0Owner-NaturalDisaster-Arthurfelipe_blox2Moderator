@@ -1,21 +1,17 @@
 -- =========================================
--- HIRO LIB - Custom Admin UI Base
--- Criado por Otávio (o brabo)
+-- HIRO LIB V2 - Custom Admin UI Base + CommandBox + Callbacks
 -- =========================================
 
 local HiroLib = {}
 
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
-
 local LocalPlayer = Players.LocalPlayer
 
--- CONFIG PADRÃO
 local FULL_SIZE = UDim2.new(0,300,0,300)
 local COLLAPSED_SIZE = UDim2.new(0,300,0,30)
 
 function HiroLib:CreateWindow(config)
-
 	config = config or {}
 
 	local WindowName = config.Name or "HiroWindow"
@@ -59,7 +55,7 @@ function HiroLib:CreateWindow(config)
 	TopBar.Parent = MenuFrame
 
 	local Title = Instance.new("TextLabel")
-	Title.Size = UDim2.new(0.6,0,1,0)
+	Title.Size = UDim2.new(0.7,0,1,0) -- title maior
 	Title.BackgroundTransparency = 1
 	Title.Text = WindowName
 	Title.TextColor3 = Color3.new(1,1,1)
@@ -69,14 +65,14 @@ function HiroLib:CreateWindow(config)
 	Title.Parent = TopBar
 
 	local SubTitle = Instance.new("TextLabel")
-	SubTitle.Size = UDim2.new(0.4,0,1,0)
-	SubTitle.Position = UDim2.new(0.6,0,0,0)
+	SubTitle.Size = UDim2.new(0.3,-5,1,0) -- mais grudado
+	SubTitle.Position = UDim2.new(0.7,5,0,0)
 	SubTitle.BackgroundTransparency = 1
 	SubTitle.Text = SubTitleText
 	SubTitle.TextColor3 = Color3.fromRGB(0,120,255)
 	SubTitle.Font = Enum.Font.SourceSans
 	SubTitle.TextSize = 16
-	SubTitle.TextXAlignment = Enum.TextXAlignment.Right
+	SubTitle.TextXAlignment = Enum.TextXAlignment.Left
 	SubTitle.Parent = TopBar
 
 	local CloseBtn = Instance.new("TextButton")
@@ -102,8 +98,19 @@ function HiroLib:CreateWindow(config)
 	BodyFrame.BackgroundTransparency = 1
 	BodyFrame.Parent = MenuFrame
 
+	-- COMMAND BOX
+	local CommandBox = Instance.new("TextBox")
+	CommandBox.Size = UDim2.new(1,-10,0,30)
+	CommandBox.Position = UDim2.new(0,5,0,0)
+	CommandBox.PlaceholderText = "Digite um comando..."
+	CommandBox.TextColor3 = Color3.new(1,1,1)
+	CommandBox.BackgroundColor3 = Color3.fromRGB(20,20,20)
+	CommandBox.BorderSizePixel = 0
+	CommandBox.Parent = BodyFrame
+
 	local CommandList = Instance.new("ScrollingFrame")
-	CommandList.Size = UDim2.new(1,0,1,0)
+	CommandList.Size = UDim2.new(1,0,1,-35)
+	CommandList.Position = UDim2.new(0,0,0,35)
 	CommandList.CanvasSize = UDim2.new(0,0,0,0)
 	CommandList.ScrollBarThickness = 6
 	CommandList.BackgroundTransparency = 1
@@ -162,7 +169,8 @@ function HiroLib:CreateWindow(config)
 	-- FUNÇÕES DA LIB
 	local Window = {}
 
-	function Window:AddCommand(text)
+	-- ADD COMMAND COM CALLBACK
+	function Window:AddCommand(text, callback)
 		local l = Instance.new("TextLabel")
 		l.Size = UDim2.new(1,-10,0,25)
 		l.BackgroundTransparency = 1
@@ -174,12 +182,13 @@ function HiroLib:CreateWindow(config)
 		l.Parent = CommandList
 
 		CommandList.CanvasSize = UDim2.new(0,0,0,UIList.AbsoluteContentSize.Y)
-		return l
+
+		return {Label = l, Callback = callback or function() end}
 	end
 
-	function Window:RemoveCommand(label)
-		if label then
-			label:Destroy()
+	function Window:RemoveCommand(cmd)
+		if cmd and cmd.Label then
+			cmd.Label:Destroy()
 		end
 	end
 
@@ -189,6 +198,31 @@ function HiroLib:CreateWindow(config)
 
 	function Window:SetSubTitle(newSub)
 		SubTitle.Text = newSub
+	end
+
+	-- EXECUTE FROM TEXTBOX
+	CommandBox.FocusLost:Connect(function(enter)
+		if not enter then return end
+		local text = CommandBox.Text
+		CommandBox.Text = ""
+
+		-- percorre comandos e executa callback se corresponder
+		for _,cmd in pairs(Window.Commands or {}) do
+			if text:lower() == cmd.Label.Text:lower() then
+				task.spawn(cmd.Callback)
+			end
+		end
+	end)
+
+	-- guarda os comandos
+	Window.Commands = {}
+
+	-- hook AddCommand pra guardar automatico
+	local oldAdd = Window.AddCommand
+	function Window:AddCommand(text, callback)
+		local cmd = oldAdd(self,text,callback)
+		table.insert(self.Commands, cmd)
+		return cmd
 	end
 
 	return Window
