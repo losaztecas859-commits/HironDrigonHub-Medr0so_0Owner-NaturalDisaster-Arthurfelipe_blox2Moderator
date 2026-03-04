@@ -87,7 +87,29 @@ Tab1:AddParagraph({
 "\nGame: " .. gameName ..
 "\nExecutor: " .. executorName
 })
+Tab1:AddSection("Atualizações")
 
+Tab1:AddButton({
+Name = "Ver Atualizações",
+Callback = function()
+Window:Dialog({
+Title = "Atualizações",
+Text =
+"[+] organizações nas abas\n" ..
+"[+] opções na aba Universais\n" ..
+"[+] opções na aba exclusivos para natural disaster",
+"[+] tag do hub no chat\n",
+Options = {
+{
+"Ok",
+function()
+print("Atualizações visualizadas")
+end
+}
+}
+})
+end
+})
 -- ===== TAB BASICOS =====
 local Tab2 = Window:MakeTab({ "Básicos", "settings" })
 
@@ -918,6 +940,22 @@ loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Fly-Gui-V3-
 end)
 end
 })
+TabAvancados:AddToggle({
+Name = "Anti fall damage v1",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://pastebin.com/raw/Fw61Cfnw"))()
+end)
+end
+})
+TabAvancados:AddToggle({
+Name = "Anti fall damage v2",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://pastefy.app/hUufRvI4/raw"))()
+end)
+end
+})
 -- ===== AVISO AO EXECUTAR =====
 Window:Dialog({
 Title = "HironDrigon Aviso",
@@ -1024,3 +1062,23 @@ local NATURAL_DISASTER_PLACEID = 189707
 if game.PlaceId ~= NATURAL_DISASTER_PLACEID then
 player:Kick("not game support")
 end
+task.spawn(function()
+task.wait(2)
+
+local TextChatService = game:GetService("TextChatService")  
+
+if TextChatService.ChatVersion == Enum.ChatVersion.TextChatService then  
+    local channel = TextChatService.TextChannels:FindFirstChild("RBXGeneral")  
+    if channel then  
+        channel:SendAsync("HironDrigon Hub USER")  
+    end  
+else  
+    local ReplicatedStorage = game:GetService("ReplicatedStorage")  
+    local chatEvent = ReplicatedStorage  
+        :WaitForChild("DefaultChatSystemChatEvents")  
+        :WaitForChild("SayMessageRequest")  
+
+    chatEvent:FireServer("HironDrigon Hub USER", "All")  
+end
+
+end)
