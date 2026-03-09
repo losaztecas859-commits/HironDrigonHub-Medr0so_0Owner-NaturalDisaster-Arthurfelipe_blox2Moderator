@@ -1,6 +1,6 @@
 -- ===== LOAD REDZ LIB =====
 local redzlib = loadstring(game:HttpGet(
-"https://raw.githubusercontent.com/minhdepzai-v/LibraryRobloc/refs/heads/main/RedzLibrary.lua"
+"https://raw.githubusercontent.com/losaztecas859-commits/Redz-library-v5.docs/refs/heads/main/testee2.lua"
 ))()
 
 redzlib:SetTheme({
@@ -99,6 +99,7 @@ Text =
 "[+] opções na aba Universais\n" ..
 "[+] opções na aba exclusivos para natural disaster",
 "[+] tag do hub no chat\n",
+"[+] mais estilo no menu",
 Options = {
 {
 "Ok",
@@ -108,6 +109,46 @@ end
 }
 }
 })
+end
+})
+Tab1:AddButton({
+Name = "TikTok do Criador",
+Callback = function()
+setclipboard("https://www.tiktok.com/@medr0so_0.dev3?_r=1&_t=ZS-94YMEzV7UnJ")
+
+Window:Dialog({
+Title = "TikTok do Criador",
+Text = "O link do TikTok foi copiado para sua área de transferência!\nCole no navegador para acessar.",
+Options = {
+{
+"Ok",
+function()
+print("TikTok copiado")
+end
+}
+}
+})
+
+end
+})
+Tab1:AddButton({
+Name = "YouTube do Criador",
+Callback = function()
+setclipboard("https://youtube.com/@soudick1211?si=1ki-cEugPQiJjKd4")
+
+Window:Dialog({
+Title = "YouTube do Criador",
+Text = "O link do Youtube foi copiado para sua área de transferência!\nCole no navegador para acessar.",
+Options = {
+{
+"Ok",
+function()
+print("Youtube copiado")
+end
+}
+}
+})
+
 end
 })
 -- ===== TAB BASICOS =====
