@@ -1093,6 +1093,128 @@ loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Chat-Coquet
 end)
 end
 })
+-- ===== TAB FUN =====
+local TabFun = Window:MakeTab({ "Fun", "smile" })
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local SelectedFunPlayer
+local HeadSit = false
+local BackpackMode = false
+local SitConnection
+
+-- pegar nomes
+local function getFunPlayers()
+    local t = {}
+    for _,plr in pairs(Players:GetPlayers()) do
+        if plr ~= LocalPlayer then
+            table.insert(t, plr.Name)
+        end
+    end
+    return t
+end
+
+-- lista de players
+local FunDropdown = TabFun:AddDropdown({
+Name = "Lista de Players",
+Options = getFunPlayers(),
+Callback = function(v)
+SelectedFunPlayer = v
+end
+})
+
+-- atualizar lista
+TabFun:AddButton({
+Name = "Atualizar lista",
+Callback = function()
+FunDropdown:Set(getFunPlayers())
+end
+})
+
+-- função de sentar
+local function startSit(mode)
+
+if SitConnection then
+SitConnection:Disconnect()
+end
+
+SitConnection = RunService.Heartbeat:Connect(function()
+
+if not SelectedFunPlayer then return end
+
+local target = Players:FindFirstChild(SelectedFunPlayer)
+if not target or not target.Character then return end
+
+local char = LocalPlayer.Character
+local targetChar = target.Character
+
+if not char then return end
+
+local hrp = char:FindFirstChild("HumanoidRootPart")
+local hum = char:FindFirstChildOfClass("Humanoid")
+
+local thrp = targetChar:FindFirstChild("HumanoidRootPart")
+local head = targetChar:FindFirstChild("Head")
+
+if not hrp or not thrp or not hum then return end
+
+hum.Sit = true
+
+if mode == "head" then
+if head then
+hrp.CFrame = head.CFrame * CFrame.new(0,1.5,0)
+end
+elseif mode == "back" then
+hrp.CFrame = thrp.CFrame * CFrame.new(0,0,-1)
+end
+
+end)
+
+end
+
+-- ===== SENTAR NA CABEÇA =====
+TabFun:AddToggle({
+Name = "Sentar na cabeça do alvo",
+Default = false,
+Callback = function(state)
+
+HeadSit = state
+
+if state then
+BackpackMode = false
+startSit("head")
+else
+if SitConnection then
+SitConnection:Disconnect()
+SitConnection = nil
+end
+end
+
+end
+})
+
+-- ===== MODO MOCHILA =====
+TabFun:AddToggle({
+Name = "Modo mochila",
+Default = false,
+Callback = function(state)
+
+BackpackMode = state
+
+if state then
+HeadSit = false
+startSit("back")
+else
+if SitConnection then
+SitConnection:Disconnect()
+SitConnection = nil
+end
+end
+
+end
+})
 -- ===== ANTI EXECUÇÃO EM OUTROS JOGOS =====
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
