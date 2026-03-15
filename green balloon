@@ -16,5 +16,3 @@ createNotif("garfield", "🎈 balloon successfully stolen!", nil, 5)
 else
 createNotif("garfield", "🎈 there is no balloons.", nil, 5)
 end
-
-end
