@@ -1,0 +1,30 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local toolName = "RedApple"
+local alreadyCloned = false
+
+for _, player in pairs(Players:GetPlayers()) do
+    if player ~= LocalPlayer then
+        
+        local backpack = player:FindFirstChild("Backpack")
+        local character = player.Character
+        
+        local tool = backpack and backpack:FindFirstChild(toolName)
+        
+        if not tool and character then
+            tool = character:FindFirstChild(toolName)
+        end
+        
+        if tool and not alreadyCloned then
+            alreadyCloned = true
+            
+            local clone = tool:Clone()
+            clone.Parent = LocalPlayer.Backpack
+            
+            print("Tool clonada de:", player.Name)
+            break
+        end
+        
+    end
+end
