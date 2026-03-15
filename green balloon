@@ -1,0 +1,20 @@
+local function createNotif(title, text, icon, duration)
+game.StarterGui:SetCore("SendNotification", {
+Title = title,
+Text = text,
+Icon = icon,
+Duration = duration
+})
+end
+
+local balloon = workspace:FindFirstChild("GreenBalloon", true)
+
+if balloon then
+local balloonClone = balloon:Clone()
+balloonClone.Parent = game:GetService("Players").LocalPlayer.Backpack
+createNotif("garfield", "🎈 balloon successfully stolen!", nil, 5)
+else
+createNotif("garfield", "🎈 there is no balloons.", nil, 5)
+end
+
+end
