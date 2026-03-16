@@ -43,8 +43,12 @@ Tab1:AddDiscordInvite({
 Name = "HironDrigon",
 Description = "Entrar",
 Logo = "rbxassetid://115421377734948",
-Invite = "https://discord.gg/tk3zEt7jDt",
+Invite = "https://discord.gg/EYePZpFG7X",
 Color = Color3.fromRGB(20, 40, 120)
+})
+Tab1:AddParagraph({
+"Versão",
+"1.1.9"
 })
 -- ===== CRIAR SECTION =====
 Tab1:AddSection("aviso")
@@ -916,34 +920,7 @@ local TabAvancados = Window:MakeTab({
 "Avançados",
 "monitor"
 })
-TabAvancados:AddSection("Itens")
--- ===== GREEN BALLOON (CÓDIGO DIRETO) =====
-TabAvancados:AddButton({
-Name = "Green Balloon (Natural Disaster)",
-Callback = function()
 
-local function createNotif(title, text, icon, duration)
-game.StarterGui:SetCore("SendNotification", {
-Title = title,
-Text = text,
-Icon = icon,
-Duration = duration
-})
-end
-
-local balloon = workspace:FindFirstChild("GreenBalloon", true)
-
-if balloon then
-local balloonClone = balloon:Clone()
-balloonClone.Parent = game:GetService("Players").LocalPlayer.Backpack
-createNotif("garfield", "🎈 balloon successfully stolen!", nil, 5)
-else
-createNotif("garfield", "🎈 there is no balloons.", nil, 5)
-end
-
-end
-
-})
 TabAvancados:AddSection("Outros")
 -- ===== FLY (CMD-X / HD ADMIN FLY) =====
 TabAvancados:AddButton({
@@ -1214,6 +1191,86 @@ end
 end
 
 end
+})
+local tabGamepass = Window:MakeTab({ "Gamepass", "flame"})
+tabGamepass:AddSection("Visuais")
+tabGamepass:AddButton({
+        Name = "maçã vermelha",
+        Callback = function()
+            pcall(function()
+                    loadstring(game:HttpGet("https://raw.githubusercontent.com/losaztecas859-commits/HironDrigonHub-Medr0so_0Owner-NaturalDisaster-Arthurfelipe_blox2Moderator/refs/heads/main/red%20apple"))()
+                end)
+        end
+})
+tabGamepass:AddButton({
+Name = "bússola",
+Callback = function()
+pcall(function()
+
+pcall(function()
+
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+local toolName = "Compass"
+local alreadyCloned = false
+
+for _, player in pairs(Players:GetPlayers()) do
+    if player ~= LocalPlayer then
+        
+        local backpack = player:FindFirstChild("Backpack")
+        local character = player.Character
+        
+        local tool = backpack and backpack:FindFirstChild(toolName)
+        
+        if not tool and character then
+            tool = character:FindFirstChild(toolName)
+        end
+        
+        if tool and not alreadyCloned then
+            alreadyCloned = true
+            
+            local clone = tool:Clone()
+            clone.Parent = LocalPlayer.Backpack
+            
+            print("Compass clonada de:", player.Name)
+            break
+        end
+        
+    end
+end
+
+end)
+end)
+end
+})
+tabGamepass:AddSection("FE")
+tabGamepass:AddButton({
+Name = "Balão verde",
+Callback = function()
+pcall(function()
+local function createNotif(title,text,icon,duration)
+        game.StarterGui:SetCore("SendNotification", {
+                Title = title; 
+                Text = text;
+                Icon = icon; 
+                Duration = duration; 
+        })
+end
+
+if game.Workspace:FindFirstChild("GreenBalloon", true) then -- Check for stealable GreenBalloon 
+        balloonClone = game.Workspace:FindFirstChild("GreenBalloon", true):Clone() -- clone it 
+        balloonClone.Parent = game:GetService("Players").LocalPlayer.Backpack
+        createNotif("By Medr0so_0","🎈 balloon succesfully stolen!",nil,"5")
+else 
+        createNotif("garfield","🎈 there is no balloons.",nil,"5")
+end 
+end)
+end
+})
+tabGamepass:AddParagraph({
+"aviso",
+"se no seu servidor não estiver ninguem com a gamepass, a opção não ira funcionar"
 })
 -- ===== ANTI EXECUÇÃO EM OUTROS JOGOS =====
 local Players = game:GetService("Players")
