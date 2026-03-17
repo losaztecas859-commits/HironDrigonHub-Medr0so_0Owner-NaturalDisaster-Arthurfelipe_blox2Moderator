@@ -1,0 +1,83 @@
+-- ===== ANTI TELEPORTE (SEPARADO) =====
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+
+local antiTPEnabled = false
+local savedCFrame
+local antiTPConn
+local charConn
+local allowNextTP = false
+
+local function setupAntiTP(char)
+    if not antiTPEnabled or not savedCFrame then return end
+
+    local hrp = char:WaitForChild("HumanoidRootPart")
+
+    if antiTPConn then
+        antiTPConn:Disconnect()
+    end
+
+    antiTPConn = RunService.Heartbeat:Connect(function()
+        if not antiTPEnabled or allowNextTP then return end
+
+        if (hrp.Position - savedCFrame.Position).Magnitude > 25 then
+            hrp.CFrame = savedCFrame
+        end
+    end)
+end
+
+-- ATIVAR
+local function ativarAntiTP()
+    antiTPEnabled = true
+
+    local char = player.Character or player.CharacterAdded:Wait()
+    savedCFrame = char:WaitForChild("HumanoidRootPart").CFrame
+
+    setupAntiTP(char)
+
+    if charConn then
+        charConn:Disconnect()
+    end
+
+    charConn = player.CharacterAdded:Connect(setupAntiTP)
+end
+
+-- DESATIVAR
+local function desativarAntiTP()
+    antiTPEnabled = false
+
+    if antiTPConn then
+        antiTPConn:Disconnect()
+        antiTPConn = nil
+    end
+
+    if charConn then
+        charConn:Disconnect()
+        charConn = nil
+    end
+end
+
+-- ATUALIZAR POSIÇÃO (tipo botão "Atualizar Spawn")
+local function atualizarSpawn()
+    local char = player.Character
+    if not char then return end
+
+    local hrp = char:FindFirstChild("HumanoidRootPart")
+    if not hrp then return end
+
+    savedCFrame = hrp.CFrame
+
+    allowNextTP = true
+    task.delay(0.4, function()
+        allowNextTP = false
+    end)
+end
+
+-- EXEMPLO DE USO:
+ativarAntiTP()
+
+-- desativarAntiTP()
+-- atualizarSpawn()
