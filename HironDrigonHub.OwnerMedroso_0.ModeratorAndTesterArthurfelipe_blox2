@@ -48,7 +48,7 @@ Color = Color3.fromRGB(20, 40, 120)
 })
 Tab1:AddParagraph({
 "Versão",
-"1.1.10"
+"1.1.11"
 })
 -- ===== CRIAR SECTION =====
 Tab1:AddSection("aviso")
@@ -315,45 +315,6 @@ end)
 
 end
 
-Tab2:AddToggle({
-Name = "Anti Teleporte",
-Default = false,
-Callback = function(state)
-antiTPEnabled = state
-if state then
-local char = player.Character or player.CharacterAdded:Wait()
-savedCFrame = char:WaitForChild("HumanoidRootPart").CFrame
-setupAntiTP(char)
-
-if charConn then charConn:Disconnect() end
-charConn = player.CharacterAdded:Connect(setupAntiTP)
-else
-if antiTPConn then antiTPConn:Disconnect() antiTPConn = nil end
-if charConn then charConn:Disconnect() charConn = nil end
-end
-end
-
-})
-
-Tab2:AddButton({
-Name = "Atualizar Spawn",
-Callback = function()
-local char = player.Character
-if not char then return end
-local hrp = char:FindFirstChild("HumanoidRootPart")
-if not hrp then return end
-savedCFrame = hrp.CFrame
-allowNextTP = true
-task.delay(0.4, function()
-allowNextTP = false
-end)
-end
-})
-Tab2:AddParagraph({
-"AVISO ⚠️",
-"Ao ativar o Anti Teleporte você NÃO vai conseguir usar o ClickFling e o TP Tool.\n" ..
-"Para usar essas funções, desative o Anti Teleporte primeiro."
-})
 Tab2:AddButton({
 Name = "Teleportar para o Lobby",
 Callback = function()
@@ -958,22 +919,7 @@ loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Fly-Gui-V3-
 end)
 end
 })
-TabAvancados:AddToggle({
-Name = "Anti fall damage v1",
-Callback = function()
-pcall(function()
-loadstring(game:HttpGet("https://pastebin.com/raw/Fw61Cfnw"))()
-end)
-end
-})
-TabAvancados:AddToggle({
-Name = "Anti fall damage v2",
-Callback = function()
-pcall(function()
-loadstring(game:HttpGet("https://pastefy.app/hUufRvI4/raw"))()
-end)
-end
-})
+
 -- ===== AVISO AO EXECUTAR =====
 Window:Dialog({
 Title = "HironDrigon Aviso",
@@ -1217,26 +1163,26 @@ local alreadyCloned = false
 
 for _, player in pairs(Players:GetPlayers()) do
     if player ~= LocalPlayer then
-        
+
         local backpack = player:FindFirstChild("Backpack")
         local character = player.Character
-        
+
         local tool = backpack and backpack:FindFirstChild(toolName)
-        
+
         if not tool and character then
             tool = character:FindFirstChild(toolName)
         end
-        
+
         if tool and not alreadyCloned then
             alreadyCloned = true
-            
+
             local clone = tool:Clone()
             clone.Parent = LocalPlayer.Backpack
-            
+
             print("Compass clonada de:", player.Name)
             break
         end
-        
+
     end
 end
 
@@ -1272,6 +1218,148 @@ tabGamepass:AddParagraph({
 "aviso",
 "se no seu servidor não estiver ninguem com a gamepass, a opção não ira funcionar"
 })
+-- ===== TAB PROTEÇÃO (REWORK) =====
+local tabProtecao = Window:MakeTab({ "Proteção", "shield" })
+
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+
+local player = Players.LocalPlayer
+
+-- ===== VARIÁVEIS =====
+local antiTP = false
+local antiFling = false
+local antiVoid = false
+
+local savedCFrame
+local antiTPConn
+local antiFlingConn
+local antiVoidConn
+
+-- ===== FUNÇÃO BASE =====
+local function getHRP()
+    local char = player.Character or player.CharacterAdded:Wait()
+    return char:WaitForChild("HumanoidRootPart")
+end
+
+-- ===== ANTI TELEPORTE =====
+local function startAntiTP()
+    local hrp = getHRP()
+    savedCFrame = hrp.CFrame
+
+    if antiTPConn then antiTPConn:Disconnect() end
+
+    antiTPConn = RunService.Heartbeat:Connect(function()
+        if not antiTP then return end
+        if (hrp.Position - savedCFrame.Position).Magnitude > 30 then
+            hrp.CFrame = savedCFrame
+        end
+    end)
+end
+
+local function stopAntiTP()
+    if antiTPConn then
+        antiTPConn:Disconnect()
+        antiTPConn = nil
+    end
+end
+
+-- ===== ANTI FLING =====
+local function startAntiFling()
+    if antiFlingConn then antiFlingConn:Disconnect() end
+
+    antiFlingConn = RunService.Heartbeat:Connect(function()
+        if not antiFling then return end
+
+        local hrp = getHRP()
+        hrp.Velocity = Vector3.new(0,0,0)
+        hrp.RotVelocity = Vector3.new(0,0,0)
+    end)
+end
+
+local function stopAntiFling()
+    if antiFlingConn then
+        antiFlingConn:Disconnect()
+        antiFlingConn = nil
+    end
+end
+
+-- ===== ANTI VOID =====
+local function startAntiVoid()
+    if antiVoidConn then antiVoidConn:Disconnect() end
+
+    antiVoidConn = RunService.Heartbeat:Connect(function()
+        if not antiVoid then return end
+
+        local hrp = getHRP()
+
+        if hrp.Position.Y < -10 then
+            hrp.CFrame = savedCFrame or hrp.CFrame + Vector3.new(0,50,0)
+        end
+    end)
+end
+
+local function stopAntiVoid()
+    if antiVoidConn then
+        antiVoidConn:Disconnect()
+        antiVoidConn = nil
+    end
+end
+
+-- ===== UI =====
+tabProtecao:AddSection("Proteções principais")
+
+tabProtecao:AddToggle({
+    Name = "Anti Teleporte",
+    Default = false,
+    Callback = function(state)
+        antiTP = state
+        if state then
+            startAntiTP()
+        else
+            stopAntiTP()
+        end
+    end
+})
+
+tabProtecao:AddButton({
+    Name = "Atualizar posição salva",
+    Callback = function()
+        local hrp = getHRP()
+        savedCFrame = hrp.CFrame
+    end
+})
+
+
+tabProtecao:AddParagraph({
+    "Aviso ⚠️",
+    "Anti Teleporte pode bloquear TP Tool e alguns scripts.\nAtualize a posição após se mover."
+})
+tabProtecao:AddToggle({
+Name = "Anti fall damage v1",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://pastebin.com/raw/Fw61Cfnw"))()
+end)
+end
+})
+tabProtecao:AddToggle({
+Name = "Anti fall damage v2",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://pastefy.app/hUufRvI4/raw"))()
+end)
+end
+})
+tabProtecao:AddButton({
+Name = "Anti Fling",
+Callback = function()
+pcall(function()
+loadstring(game:HttpGet("https://rawscripts.net/raw/Universal-Script-Antifling-131275"))()
+end)
+end
+})
+
 -- ===== ANTI EXECUÇÃO EM OUTROS JOGOS =====
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
