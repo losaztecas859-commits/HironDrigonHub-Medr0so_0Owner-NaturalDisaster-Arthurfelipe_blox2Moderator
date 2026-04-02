@@ -1,3 +1,4 @@
+
 -- ===== LOAD REDZ LIB =====
 local redzlib = loadstring(game:HttpGet(
 "https://raw.githubusercontent.com/losaztecas859-commits/Redz-library-v5.docs/refs/heads/main/testee2.lua"
@@ -48,7 +49,7 @@ Color = Color3.fromRGB(20, 40, 120)
 })
 Tab1:AddParagraph({
 "Versão",
-"1.1.11"
+"1.1.12"
 })
 -- ===== CRIAR SECTION =====
 Tab1:AddSection("aviso")
@@ -291,49 +292,6 @@ spin.Parent = hrp
 
 end
 
-})
--- ===== CRIAR SECTION =====
-Tab2:AddSection("teleporte")
--- ===== ANTI TELEPORTE DEFINITIVO =====
-local antiTPEnabled = false
-local savedCFrame
-local antiTPConn
-local charConn
-local allowNextTP = false
-
-local function setupAntiTP(char)
-if not antiTPEnabled or not savedCFrame then return end
-local hrp = char:WaitForChild("HumanoidRootPart")
-
-if antiTPConn then antiTPConn:Disconnect() end
-antiTPConn = RunService.Heartbeat:Connect(function()
-if not antiTPEnabled or allowNextTP then return end
-if (hrp.Position - savedCFrame.Position).Magnitude > 25 then
-hrp.CFrame = savedCFrame
-end
-end)
-
-end
-
-Tab2:AddButton({
-Name = "Teleportar para o Lobby",
-Callback = function()
-local char = player.Character
-if not char then return end
-local hrp = char:FindFirstChild("HumanoidRootPart")
-if not hrp then return end
-hrp.CFrame = CFrame.new(-254.5, 194.6, 299.2)
-end
-})
-Tab2:AddButton({
-Name = "Teleportar para Ilha",
-Callback = function()
-local char = player.Character
-if not char then return end
-local hrp = char:FindFirstChild("HumanoidRootPart")
-if not hrp then return end
-hrp.CFrame = CFrame.new(-117.2, 47.6, 7.2)
-end
 })
 -- ===== CRIAR SECTION =====
 Tab2:AddSection("opções de resetar")
@@ -1390,3 +1348,35 @@ else
 end
 
 end)
+-- ===== TAB TELEPORTES =====
+local TabTP = Window:MakeTab({ "Teleportes", "map-pin" })
+
+TabTP:AddSection("Teleportes principais")
+
+-- ===== TP LOBBY =====
+TabTP:AddButton({
+Name = "Ir para Lobby",
+Callback = function()
+local char = player.Character
+if not char then return end
+local hrp = char:FindFirstChild("HumanoidRootPart")
+if hrp then
+hrp.CFrame = CFrame.new(-254.5, 194.6, 299.2)
+end
+end
+})
+
+-- ===== TP ILHA =====
+TabTP:AddButton({
+Name = "Ir para Ilha",
+Callback = function()
+local char = player.Character
+if not char then return end
+local hrp = char:FindFirstChild("HumanoidRootPart")
+if hrp then
+hrp.CFrame = CFrame.new(-117.2, 47.6, 7.2)
+end
+end
+})
+TabTP:AddParagraph({
+Title = "mais opções estão adicionadas durante Atualizações" })
