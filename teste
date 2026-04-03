@@ -1,0 +1,2223 @@
+local MarketplaceService = game:GetService("MarketplaceService")
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+local HttpService = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
+local CoreGui = game:GetService("CoreGui")
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+local PlayerMouse = Player:GetMouse()
+
+local redzlib = {
+	Themes = {
+		Darker = {
+			["Color Hub 1"] = ColorSequence.new({
+				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)),
+				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))
+			}),
+			["Color Hub 2"] = Color3.fromRGB(30, 30, 30),
+			["Color Stroke"] = Color3.fromRGB(40, 40, 40),
+			["Color Theme"] = Color3.fromRGB(255, 255, 255),
+			["Color Text"] = Color3.fromRGB(243, 243, 243),
+			["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
+		},
+		Dark = {
+			["Color Hub 1"] = ColorSequence.new({
+				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)),
+				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))
+			}),
+			["Color Hub 2"] = Color3.fromRGB(45, 45, 45),
+			["Color Stroke"] = Color3.fromRGB(65, 65, 65),
+			["Color Theme"] = Color3.fromRGB(255, 255, 255),
+			["Color Text"] = Color3.fromRGB(245, 245, 245),
+			["Color Dark Text"] = Color3.fromRGB(190, 190, 190)
+		},
+		Purple = {
+			["Color Hub 1"] = ColorSequence.new({
+				ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)),
+				ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))
+			}),
+			["Color Hub 2"] = Color3.fromRGB(30, 30, 30),
+			["Color Stroke"] = Color3.fromRGB(40, 40, 40),
+			["Color Theme"] = Color3.fromRGB(255, 255, 255),
+			["Color Text"] = Color3.fromRGB(240, 240, 240),
+			["Color Dark Text"] = Color3.fromRGB(180, 180, 180)
+		}
+	},
+	Info = {
+		Version = "1.1.0"
+	},
+	Save = {
+		UISize = {550, 380},
+		TabSize = 160,
+		Theme = "Darker"
+	},
+	Settings = {},
+	Connection = {},
+	Instances = {},
+	Elements = {},
+	Options = {},
+	Flags = {},
+	Tabs = {},
+	Icons = (function()
+		return {
+			["accessibility"] = "rbxassetid://10709751939",
+			["activity"] = "rbxassetid://10709752035",
+			["airvent"] = "rbxassetid://10709752131",
+			["airplay"] = "rbxassetid://10709752254",
+			["alarmcheck"] = "rbxassetid://10709752405",
+			["alarmclock"] = "rbxassetid://10709752630",
+			["alarmclockoff"] = "rbxassetid://10709752508",
+			["alarmminus"] = "rbxassetid://10709752732",
+			["alarmplus"] = "rbxassetid://10709752825",
+			["album"] = "rbxassetid://10709752906",
+			["alertcircle"] = "rbxassetid://10709752996",
+			["alertoctagon"] = "rbxassetid://10709753064",
+			["alerttriangle"] = "rbxassetid://10709753149",
+			["aligncenter"] = "rbxassetid://10709753570",
+			["aligncenterhorizontal"] = "rbxassetid://10709753272",
+			["aligncentervertical"] = "rbxassetid://10709753421",
+			["alignendhorizontal"] = "rbxassetid://10709753692",
+			["alignendvertical"] = "rbxassetid://10709753808",
+			["alignhorizontaldistributecenter"] = "rbxassetid://10747779791",
+			["alignhorizontaldistributeend"] = "rbxassetid://10747784534",
+			["alignhorizontaldistributestart"] = "rbxassetid://10709754118",
+			["alignhorizontaljustifycenter"] = "rbxassetid://10709754204",
+			["alignhorizontaljustifyend"] = "rbxassetid://10709754317",
+			["alignhorizontaljustifystart"] = "rbxassetid://10709754436",
+			["alignhorizontalspacearound"] = "rbxassetid://10709754590",
+			["alignhorizontalspacebetween"] = "rbxassetid://10709754749",
+			["alignjustify"] = "rbxassetid://10709759610",
+			["alignleft"] = "rbxassetid://10709759764",
+			["alignright"] = "rbxassetid://10709759895",
+			["alignstarthorizontal"] = "rbxassetid://10709760051",
+			["alignstartvertical"] = "rbxassetid://10709760244",
+			["alignverticaldistributecenter"] = "rbxassetid://10709760351",
+			["alignverticaldistributeend"] = "rbxassetid://10709760434",
+			["alignverticaldistributestart"] = "rbxassetid://10709760612",
+			["alignverticaljustifycenter"] = "rbxassetid://10709760814",
+			["alignverticaljustifyend"] = "rbxassetid://10709761003",
+			["alignverticaljustifystart"] = "rbxassetid://10709761176",
+			["alignverticalspacearound"] = "rbxassetid://10709761324",
+			["alignverticalspacebetween"] = "rbxassetid://10709761434",
+			["anchor"] = "rbxassetid://10709761530",
+			["angry"] = "rbxassetid://10709761629",
+			["annoyed"] = "rbxassetid://10709761722",
+			["aperture"] = "rbxassetid://10709761813",
+			["apple"] = "rbxassetid://10709761889",
+			["archive"] = "rbxassetid://10709762233",
+			["archiverestore"] = "rbxassetid://10709762058",
+			["armchair"] = "rbxassetid://10709762327",
+			["arrowbigdown"] = "rbxassetid://10747796644",
+			["arrowbigleft"] = "rbxassetid://10709762574",
+			["arrowbigright"] = "rbxassetid://10709762727",
+			["arrowbigup"] = "rbxassetid://10709762879",
+			["arrowdown"] = "rbxassetid://10709767827",
+			["arrowdowncircle"] = "rbxassetid://10709763034",
+			["arrowdownleft"] = "rbxassetid://10709767656",
+			["arrowdownright"] = "rbxassetid://10709767750",
+			["arrowleft"] = "rbxassetid://10709768114",
+			["arrowleftcircle"] = "rbxassetid://10709767936",
+			["arrowleftright"] = "rbxassetid://10709768019",
+			["arrowright"] = "rbxassetid://10709768347",
+			["arrowrightcircle"] = "rbxassetid://10709768226",
+			["arrowup"] = "rbxassetid://10709768939",
+			["arrowupcircle"] = "rbxassetid://10709768432",
+			["arrowupdown"] = "rbxassetid://10709768538",
+			["arrowupleft"] = "rbxassetid://10709768661",
+			["arrowupright"] = "rbxassetid://10709768787",
+			["asterisk"] = "rbxassetid://10709769095",
+			["atsign"] = "rbxassetid://10709769286",
+			["award"] = "rbxassetid://10709769406",
+			["axe"] = "rbxassetid://10709769508",
+			["axis3d"] = "rbxassetid://10709769598",
+			["baby"] = "rbxassetid://10709769732",
+			["backpack"] = "rbxassetid://10709769841",
+			["baggageclaim"] = "rbxassetid://10709769935",
+			["banana"] = "rbxassetid://10709770005",
+			["banknote"] = "rbxassetid://10709770178",
+			["barchart"] = "rbxassetid://10709773755",
+			["barchart2"] = "rbxassetid://10709770317",
+			["barchart3"] = "rbxassetid://10709770431",
+			["barchart4"] = "rbxassetid://10709770560",
+			["barcharthorizontal"] = "rbxassetid://10709773669",
+			["barcode"] = "rbxassetid://10747360675",
+			["baseline"] = "rbxassetid://10709773863",
+			["bath"] = "rbxassetid://10709773963",
+			["battery"] = "rbxassetid://10709774640",
+			["batterycharging"] = "rbxassetid://10709774068",
+			["batteryfull"] = "rbxassetid://10709774206",
+			["batterylow"] = "rbxassetid://10709774370",
+			["batterymedium"] = "rbxassetid://10709774513",
+			["beaker"] = "rbxassetid://10709774756",
+			["bed"] = "rbxassetid://10709775036",
+			["beddouble"] = "rbxassetid://10709774864",
+			["bedsingle"] = "rbxassetid://10709774968",
+			["beer"] = "rbxassetid://10709775167",
+			["bell"] = "rbxassetid://10709775704",
+			["bellminus"] = "rbxassetid://10709775241",
+			["belloff"] = "rbxassetid://10709775320",
+			["bellplus"] = "rbxassetid://10709775448",
+			["bellring"] = "rbxassetid://10709775560",
+			["bike"] = "rbxassetid://10709775894",
+			["binary"] = "rbxassetid://10709776050",
+			["bitcoin"] = "rbxassetid://10709776126",
+			["bluetooth"] = "rbxassetid://10709776655",
+			["bluetoothconnected"] = "rbxassetid://10709776240",
+			["bluetoothoff"] = "rbxassetid://10709776344",
+			["bluetoothsearching"] = "rbxassetid://10709776501",
+			["bold"] = "rbxassetid://10747813908",
+			["bomb"] = "rbxassetid://10709781460",
+			["bone"] = "rbxassetid://10709781605",
+			["book"] = "rbxassetid://10709781824",
+			["bookopen"] = "rbxassetid://10709781717",
+			["bookmark"] = "rbxassetid://10709782154",
+			["bookmarkminus"] = "rbxassetid://10709781919",
+			["bookmarkplus"] = "rbxassetid://10709782044",
+			["bot"] = "rbxassetid://10709782230",
+			["box"] = "rbxassetid://10709782497",
+			["boxselect"] = "rbxassetid://10709782342",
+			["boxes"] = "rbxassetid://10709782582",
+			["briefcase"] = "rbxassetid://10709782662",
+			["brush"] = "rbxassetid://10709782758",
+			["bug"] = "rbxassetid://10709782845",
+			["building"] = "rbxassetid://10709783051",
+			["building2"] = "rbxassetid://10709782939",
+			["bus"] = "rbxassetid://10709783137",
+			["cake"] = "rbxassetid://10709783217",
+			["calculator"] = "rbxassetid://10709783311",
+			["calendar"] = "rbxassetid://10709789505",
+			["calendarcheck"] = "rbxassetid://10709783474",
+			["calendarcheck2"] = "rbxassetid://10709783392",
+			["calendarclock"] = "rbxassetid://10709783577",
+			["calendardays"] = "rbxassetid://10709783673",
+			["calendarheart"] = "rbxassetid://10709783835",
+			["calendarminus"] = "rbxassetid://10709783959",
+			["calendaroff"] = "rbxassetid://10709788784",
+			["calendarplus"] = "rbxassetid://10709788937",
+			["calendarrange"] = "rbxassetid://10709789053",
+			["calendarsearch"] = "rbxassetid://10709789200",
+			["calendarx"] = "rbxassetid://10709789407",
+			["calendarx2"] = "rbxassetid://10709789329",
+			["camera"] = "rbxassetid://10709789686",
+			["cameraoff"] = "rbxassetid://10747822677",
+			["car"] = "rbxassetid://10709789810",
+			["carrot"] = "rbxassetid://10709789960",
+			["cast"] = "rbxassetid://10709790097",
+			["charge"] = "rbxassetid://10709790202",
+			["check"] = "rbxassetid://10709790644",
+			["checkcircle"] = "rbxassetid://10709790387",
+			["checkcircle2"] = "rbxassetid://10709790298",
+			["checksquare"] = "rbxassetid://10709790537",
+			["chefhat"] = "rbxassetid://10709790757",
+			["cherry"] = "rbxassetid://10709790875",
+			["chevrondown"] = "rbxassetid://10709790948",
+			["chevronfirst"] = "rbxassetid://10709791015",
+			["chevronlast"] = "rbxassetid://10709791130",
+			["chevronleft"] = "rbxassetid://10709791281",
+			["chevronright"] = "rbxassetid://10709791437",
+			["chevronup"] = "rbxassetid://10709791523",
+			["chevronsdown"] = "rbxassetid://10709796864",
+			["chevronsdownup"] = "rbxassetid://10709791632",
+			["chevronsleft"] = "rbxassetid://10709797151",
+			["chevronsleftright"] = "rbxassetid://10709797006",
+			["chevronsright"] = "rbxassetid://10709797382",
+			["chevronsrightleft"] = "rbxassetid://10709797274",
+			["chevronsup"] = "rbxassetid://10709797622",
+			["chevronsupdown"] = "rbxassetid://10709797508",
+			["chrome"] = "rbxassetid://10709797725",
+			["circle"] = "rbxassetid://10709798174",
+			["circledot"] = "rbxassetid://10709797837",
+			["circleellipsis"] = "rbxassetid://10709797985",
+			["circleslashed"] = "rbxassetid://10709798100",
+			["circleoff"] = "rbxassetid://10709798274",
+			["circleslash"] = "rbxassetid://10709798363",
+			["clipboard"] = "rbxassetid://10709798835",
+			["clipboardcheck"] = "rbxassetid://10709798443",
+			["clipboardcopy"] = "rbxassetid://10709798544",
+			["clipboardlist"] = "rbxassetid://10709798653",
+			["clipboardx"] = "rbxassetid://10709798751",
+			["clock"] = "rbxassetid://10709799518",
+			["clock1"] = "rbxassetid://10709798935",
+			["clock10"] = "rbxassetid://10709799015",
+			["clock11"] = "rbxassetid://10709799102",
+			["clock12"] = "rbxassetid://10709799201",
+			["clock2"] = "rbxassetid://10709799276",
+			["clock3"] = "rbxassetid://10709799341",
+			["clock4"] = "rbxassetid://10709799407",
+			["clock5"] = "rbxassetid://10709799596",
+			["clock6"] = "rbxassetid://10709799687",
+			["clock7"] = "rbxassetid://10709799763",
+			["clock8"] = "rbxassetid://10709799842",
+			["clock9"] = "rbxassetid://10709799933",
+			["cloud"] = "rbxassetid://10709800531",
+			["clouddrizzle"] = "rbxassetid://10709800014",
+			["cloudfog"] = "rbxassetid://10709800092",
+			["cloudhail"] = "rbxassetid://10709800174",
+			["cloudlightning"] = "rbxassetid://10709800257",
+			["cloudmoon"] = "rbxassetid://10709800344",
+			["cloudoff"] = "rbxassetid://10709800445",
+			["cloudrain"] = "rbxassetid://10709800624",
+			["cloudrainwind"] = "rbxassetid://10709800723",
+			["cloudsnow"] = "rbxassetid://10709800843",
+			["cloudsun"] = "rbxassetid://10709800938",
+			["cloudy"] = "rbxassetid://10709801046",
+			["clover"] = "rbxassetid://10709801124",
+			["code"] = "rbxassetid://10709801334",
+			["code2"] = "rbxassetid://10709801235",
+			["codepen"] = "rbxassetid://10709801441",
+			["codesandbox"] = "rbxassetid://10709801540",
+			["coffee"] = "rbxassetid://10709801650",
+			["coins"] = "rbxassetid://10709801736",
+			["columns"] = "rbxassetid://10709801815",
+			["command"] = "rbxassetid://10709801913",
+			["compass"] = "rbxassetid://10709802030",
+			["component"] = "rbxassetid://10709802133",
+			["contact"] = "rbxassetid://10709802244",
+			["contrast"] = "rbxassetid://10709802334",
+			["cookie"] = "rbxassetid://10709802422",
+			["copy"] = "rbxassetid://10709802744",
+			["copycheck"] = "rbxassetid://10709802521",
+			["copyminus"] = "rbxassetid://10709802613",
+			["copyplus"] = "rbxassetid://10709802685",
+			["copyleft"] = "rbxassetid://10709802821",
+			["copyright"] = "rbxassetid://10709802905",
+			["cornerdownleft"] = "rbxassetid://10709802996",
+			["cornerdownright"] = "rbxassetid://10709803102",
+			["cornerleftdown"] = "rbxassetid://10709803206",
+			["cornerleftup"] = "rbxassetid://10709803290",
+			["cornerrightdown"] = "rbxassetid://10709803407",
+			["cornerrightup"] = "rbxassetid://10709803496",
+			["cornerupleft"] = "rbxassetid://10709803591",
+			["cornerupright"] = "rbxassetid://10709803681",
+			["cpu"] = "rbxassetid://10709803777",
+			["creditcard"] = "rbxassetid://10709803875",
+			["crop"] = "rbxassetid://10709803965",
+			["cross"] = "rbxassetid://10709804043",
+			["crosshair"] = "rbxassetid://10709804135",
+			["crown"] = "rbxassetid://10709804230",
+			["cupwrapper"] = "rbxassetid://10709804332",
+			["currency"] = "rbxassetid://10709804423",
+			["cursorclick"] = "rbxassetid://10709804533",
+			["dash"] = "rbxassetid://10709804620",
+			["database"] = "rbxassetid://10709804724",
+			["debug"] = "rbxassetid://10709804820",
+			["delete"] = "rbxassetid://10709804918",
+			["dial"] = "rbxassetid://10709805004",
+			["dialpad"] = "rbxassetid://10709805126",
+			["diamond"] = "rbxassetid://10709805214",
+			["dice1"] = "rbxassetid://10709805306",
+			["dice2"] = "rbxassetid://10709805391",
+			["dice3"] = "rbxassetid://10709805481",
+			["dice4"] = "rbxassetid://10709805562",
+			["dice5"] = "rbxassetid://10709805663",
+			["dice6"] = "rbxassetid://10709805770",
+			["dribbble"] = "rbxassetid://10709805886",
+			["droplet"] = "rbxassetid://10709805988",
+			["droplets"] = "rbxassetid://10709806085",
+			["drumstick"] = "rbxassetid://10709806173",
+			["edit"] = "rbxassetid://10709806501",
+			["edit2"] = "rbxassetid://10709806286",
+			["edit3"] = "rbxassetid://10709806395",
+			["egg"] = "rbxassetid://10709806716",
+			["eggfried"] = "rbxassetid://10709806619",
+			["equal"] = "rbxassetid://10709806820",
+			["equalnot"] = "rbxassetid://10709806915",
+			["eraser"] = "rbxassetid://10709807005",
+			["euro"] = "rbxassetid://10709807086",
+			["expand"] = "rbxassetid://10709807185",
+			["external-link"] = "rbxassetid://10709807293",
+			["eye"] = "rbxassetid://10709807513",
+			["eyeoff"] = "rbxassetid://10709807412",
+			["facebook"] = "rbxassetid://10709807604",
+			["factory"] = "rbxassetid://10709807705",
+			["fan"] = "rbxassetid://10709807788",
+			["fast-forward"] = "rbxassetid://10709807890",
+			["feather"] = "rbxassetid://10709807985",
+			["figma"] = "rbxassetid://10709808092",
+			["file"] = "rbxassetid://10709810332",
+			["filearchive"] = "rbxassetid://10709808202",
+			["fileaudio"] = "rbxassetid://10709808309",
+			["fileaudio2"] = "rbxassetid://10709808394",
+			["fileaxis3d"] = "rbxassetid://10709808489",
+			["filebadge"] = "rbxassetid://10709808681",
+			["filebadge2"] = "rbxassetid://10709808593",
+			["filebar-chart"] = "rbxassetid://10709808882",
+			["filebar-chart2"] = "rbxassetid://10709808779",
+			["filecheck"] = "rbxassetid://10709809081",
+			["filecheck2"] = "rbxassetid://10709808984",
+			["filecode"] = "rbxassetid://10709809184",
+			["filecog"] = "rbxassetid://10709809363",
+			["filecog2"] = "rbxassetid://10709809265",
+			["filediff"] = "rbxassetid://10709809467",
+			["filedigit"] = "rbxassetid://10709809569",
+			["filedown"] = "rbxassetid://10709809664",
+			["fileedit"] = "rbxassetid://10709809756",
+			["fileheart"] = "rbxassetid://10709809855",
+			["fileimage"] = "rbxassetid://10709809943",
+			["fileinput"] = "rbxassetid://10709810036",
+			["filejson"] = "rbxassetid://10709810238",
+			["filejson2"] = "rbxassetid://10709810143",
+			["filekey"] = "rbxassetid://10709810531",
+			["filekey2"] = "rbxassetid://10709810433",
+			["filelock"] = "rbxassetid://10709810719",
+			["filelock2"] = "rbxassetid://10709810626",
+			["fileminus"] = "rbxassetid://10709810931",
+			["fileminus2"] = "rbxassetid://10709810834",
+			["fileoutput"] = "rbxassetid://10709811030",
+			["fileplus"] = "rbxassetid://10709811210",
+			["fileplus2"] = "rbxassetid://10709811124",
+			["filequestion"] = "rbxassetid://10709811310",
+			["files"] = "rbxassetid://10709812458",
+			["filesearch"] = "rbxassetid://10709811520",
+			["filesearch2"] = "rbxassetid://10709811411",
+			["filespreatsheet"] = "rbxassetid://10709811617",
+			["filesymlink"] = "rbxassetid://10709811724",
+			["fileterminal"] = "rbxassetid://10709811818",
+			["filetext"] = "rbxassetid://10709811921",
+			["filetype"] = "rbxassetid://10709812111",
+			["filetype2"] = "rbxassetid://10709812020",
+			["fileup"] = "rbxassetid://10709812204",
+			["filevideo"] = "rbxassetid://10709812371",
+			["filevideo2"] = "rbxassetid://10709812284",
+			["filewarning"] = "rbxassetid://10709812563",
+			["filex"] = "rbxassetid://10709812759",
+			["filex2"] = "rbxassetid://10709812674",
+			["film"] = "rbxassetid://10709812847",
+			["filter"] = "rbxassetid://10709812943",
+			["fingerprint"] = "rbxassetid://10709813038",
+			["flag"] = "rbxassetid://10709813426",
+			["flagoff"] = "rbxassetid://10709813133",
+			["flagpositive"] = "rbxassetid://10709813221",
+			["flagtriangleleft"] = "rbxassetid://10709813303",
+			["flagtriangleright"] = "rbxassetid://10709813374",
+			["flame"] = "rbxassetid://10709813531",
+			["flashlight"] = "rbxassetid://10709813735",
+			["flashlightoff"] = "rbxassetid://10709813636",
+			["flaskconical"] = "rbxassetid://10709813840",
+			["flaskround"] = "rbxassetid://10709813935",
+			["flip-horizontal"] = "rbxassetid://10709814041",
+			["flip-horizontal2"] = "rbxassetid://10709813994",
+			["flip-vertical"] = "rbxassetid://10709814183",
+			["flip-vertical2"] = "rbxassetid://10709814115",
+			["flower"] = "rbxassetid://10709814324",
+			["flower2"] = "rbxassetid://10709814234",
+			["focus"] = "rbxassetid://10709814436",
+			["folder"] = "rbxassetid://10709815483",
+			["folderarchive"] = "rbxassetid://10709814545",
+			["foldercheck"] = "rbxassetid://10709814643",
+			["folderclosed"] = "rbxassetid://10709814742",
+			["foldercog"] = "rbxassetid://10709814918",
+			["foldercog2"] = "rbxassetid://10709814828",
+			["folderdown"] = "rbxassetid://10709815015",
+			["folderedit"] = "rbxassetid://10709815104",
+			["folderheart"] = "rbxassetid://10709815197",
+			["folderinput"] = "rbxassetid://10709815293",
+			["folderkey"] = "rbxassetid://10709815394",
+			["folderlock"] = "rbxassetid://10709815591",
+			["folderminus"] = "rbxassetid://10709815684",
+			["folderopen"] = "rbxassetid://10709815777",
+			["folderoutput"] = "rbxassetid://10709815870",
+			["folderplus"] = "rbxassetid://10709815975",
+			["foldersearch"] = "rbxassetid://10709816155",
+			["foldersearch2"] = "rbxassetid://10709816061",
+			["folders"] = "rbxassetid://10709816258",
+			["foldersymlink"] = "rbxassetid://10709816350",
+			["folderup"] = "rbxassetid://10709816452",
+			["folderwarning"] = "rbxassetid://10709816551",
+			["folderx"] = "rbxassetid://10709816652",
+			["form-input"] = "rbxassetid://10709816766",
+			["forward"] = "rbxassetid://10709816860",
+			["frame"] = "rbxassetid://10709816962",
+			["framer"] = "rbxassetid://10709817061",
+			["frown"] = "rbxassetid://10709817161",
+			["fuel"] = "rbxassetid://10709817260",
+			["function"] = "rbxassetid://10709817359",
+			["gamepad"] = "rbxassetid://10709817540",
+			["gamepad2"] = "rbxassetid://10709817445",
+			["gauge"] = "rbxassetid://10709817650",
+			["gavel"] = "rbxassetid://10709817743",
+			["gem"] = "rbxassetid://10709817840",
+			["ghost"] = "rbxassetid://10709817931",
+			["gift"] = "rbxassetid://10709818042",
+			["git-branch"] = "rbxassetid://10709818134",
+			["git-branch-plus"] = "rbxassetid://10709818228",
+			["git-commit"] = "rbxassetid://10709818329",
+			["git-compare"] = "rbxassetid://10709818434",
+			["git-fork"] = "rbxassetid://10709818536",
+			["git-merge"] = "rbxassetid://10709818625",
+			["git-pull-request"] = "rbxassetid://10709818857",
+			["git-pull-request-closed"] = "rbxassetid://10709818711",
+			["git-pull-request-draft"] = "rbxassetid://10709818781",
+			["glass"] = "rbxassetid://10709819053",
+			["glass2"] = "rbxassetid://10709818931",
+			["glasswater"] = "rbxassetid://10709819142",
+			["glasses"] = "rbxassetid://10709819236",
+			["globe"] = "rbxassetid://10709819446",
+			["globe2"] = "rbxassetid://10709819335",
+			["grab"] = "rbxassetid://10709819543",
+			["graduationcap"] = "rbxassetid://10709819652",
+			["grid"] = "rbxassetid://10709819744",
+			["grip-horizontal"] = "rbxassetid://10709819838",
+			["grip-vertical"] = "rbxassetid://10709819929",
+			["group"] = "rbxassetid://10709820025",
+			["hammer"] = "rbxassetid://10709820131",
+			["hand"] = "rbxassetid://10709820330",
+			["handmetal"] = "rbxassetid://10709820235",
+			["hard-drive"] = "rbxassetid://10709820428",
+			["hard-hat"] = "rbxassetid://10709820525",
+			["hash"] = "rbxassetid://10709820614",
+			["haze"] = "rbxassetid://10709820712",
+			["headphones"] = "rbxassetid://10709820815",
+			["heart"] = "rbxassetid://10709821045",
+			["heartcrack"] = "rbxassetid://10709820919",
+			["heartoff"] = "rbxassetid://10709821000",
+			["help-circle"] = "rbxassetid://10709821125",
+			["hexagon"] = "rbxassetid://10709821245",
+			["highlighter"] = "rbxassetid://10709821345",
+			["history"] = "rbxassetid://10709821448",
+			["home"] = "rbxassetid://10709821556",
+			["hop"] = "rbxassetid://10709821667",
+			["hopoff"] = "rbxassetid://10709821614",
+			["hotel"] = "rbxassetid://10709821768",
+			["hourglass"] = "rbxassetid://10709821870",
+			["icecream"] = "rbxassetid://10709821980",
+			["image"] = "rbxassetid://10709822340",
+			["imageminus"] = "rbxassetid://10709822100",
+			["imageoff"] = "rbxassetid://10709822185",
+			["imageplus"] = "rbxassetid://10709822268",
+			["import"] = "rbxassetid://10709822434",
+			["inbox"] = "rbxassetid://10709822533",
+			["indent"] = "rbxassetid://10709822647",
+			["indian-rupee"] = "rbxassetid://10709822744",
+			["infinity"] = "rbxassetid://10709822830",
+			["info"] = "rbxassetid://10709822921",
+			["inspect"] = "rbxassetid://10709823019",
+			["instagram"] = "rbxassetid://10709823116",
+			["italic"] = "rbxassetid://10709823223",
+			["japanese-yen"] = "rbxassetid://10709823321",
+			["joystick"] = "rbxassetid://10709823438",
+			["key"] = "rbxassetid://10709823521",
+			["keyboard"] = "rbxassetid://10709823635",
+			["lamp"] = "rbxassetid://10709824040",
+			["lampceiling"] = "rbxassetid://10709823724",
+			["lampdesk"] = "rbxassetid://10709823827",
+			["lampfloor"] = "rbxassetid://10709823927",
+			["lampwall-down"] = "rbxassetid://10709824147",
+			["lampwall-up"] = "rbxassetid://10709824240",
+			["landmark"] = "rbxassetid://10709824337",
+			["languages"] = "rbxassetid://10709824443",
+			["laptop"] = "rbxassetid://10709824653",
+			["laptop2"] = "rbxassetid://10709824546",
+			["lasso"] = "rbxassetid://10709824855",
+			["lassoselect"] = "rbxassetid://10709824749",
+			["laugh"] = "rbxassetid://10709824945",
+			["layers"] = "rbxassetid://10709825040",
+			["layout"] = "rbxassetid://10709825550",
+			["layoutdashboard"] = "rbxassetid://10709825140",
+			["layoutgrid"] = "rbxassetid://10709825227",
+			["layoutlist"] = "rbxassetid://10709825324",
+			["layouttemplate"] = "rbxassetid://10709825433",
+			["leaf"] = "rbxassetid://10709825642",
+			["library"] = "rbxassetid://10709825754",
+			["life-buoy"] = "rbxassetid://10709825852",
+			["lightbulb"] = "rbxassetid://10709826053",
+			["lightbulboff"] = "rbxassetid://10709825950",
+			["line-chart"] = "rbxassetid://10709826154",
+			["link"] = "rbxassetid://10709826394",
+			["link2"] = "rbxassetid://10709826249",
+			["link2off"] = "rbxassetid://10709826329",
+			["linkedin"] = "rbxassetid://10709826493",
+			["list"] = "rbxassetid://10709827051",
+			["listchecks"] = "rbxassetid://10709826593",
+			["listend"] = "rbxassetid://10709826690",
+			["listminus"] = "rbxassetid://10709826786",
+			["listmusic"] = "rbxassetid://10709826880",
+			["listordered"] = "rbxassetid://10709826978",
+			["listplus"] = "rbxassetid://10709827150",
+			["liststart"] = "rbxassetid://10709827236",
+			["listvideo"] = "rbxassetid://10709827338",
+			["listx"] = "rbxassetid://10709827433",
+			["loader"] = "rbxassetid://10709827529",
+			["loader2"] = "rbxassetid://10709827618",
+			["locate"] = "rbxassetid://10709827848",
+			["locatefixed"] = "rbxassetid://10709827732",
+			["locateoff"] = "rbxassetid://10709827944",
+			["lock"] = "rbxassetid://10709828065",
+			["log-in"] = "rbxassetid://10709828163",
+			["log-out"] = "rbxassetid://10709828271",
+			["luggage"] = "rbxassetid://10709828367",
+			["m-circle"] = "rbxassetid://10709828454",
+			["m-square"] = "rbxassetid://10709828551",
+			["magnet"] = "rbxassetid://10709828655",
+			["mail"] = "rbxassetid://10709828944",
+			["mailcheck"] = "rbxassetid://10709828741",
+			["mailminus"] = "rbxassetid://10709828830",
+			["mailopen"] = "rbxassetid://10709829033",
+			["mailplus"] = "rbxassetid://10709829124",
+			["mailquestion"] = "rbxassetid://10709829215",
+			["mailx"] = "rbxassetid://10709829312",
+			["map"] = "rbxassetid://10709829648",
+			["mappin"] = "rbxassetid://10709829424",
+			["mappinoff"] = "rbxassetid://10709829536",
+			["maximize"] = "rbxassetid://10709829875",
+			["maximize2"] = "rbxassetid://10709829762",
+			["megaphone"] = "rbxassetid://10709830008",
+			["megaphoneoff"] = "rbxassetid://10709829938",
+			["meh"] = "rbxassetid://10709830113",
+			["menu"] = "rbxassetid://10709830219",
+			["message-circle"] = "rbxassetid://10709830335",
+			["message-square"] = "rbxassetid://10709830438",
+			["mic"] = "rbxassetid://10709830730",
+			["micoff"] = "rbxassetid://10709830531",
+			["mic2"] = "rbxassetid://10709830634",
+			["microscope"] = "rbxassetid://10709830831",
+			["microwave"] = "rbxassetid://10709830932",
+			["milestone"] = "rbxassetid://10709831037",
+			["minimize"] = "rbxassetid://10709831238",
+			["minimize2"] = "rbxassetid://10709831127",
+			["minus"] = "rbxassetid://10709831514",
+			["minuscircle"] = "rbxassetid://10709831333",
+			["minussquare"] = "rbxassetid://10709831427",
+			["monitor"] = "rbxassetid://10709832043",
+			["monitoroff"] = "rbxassetid://10709831620",
+			["monitorspeaker"] = "rbxassetid://10709831718",
+			["monitortopspeaker"] = "rbxassetid://10709831885",
+			["monitorphone"] = "rbxassetid://10709831969",
+			["moon"] = "rbxassetid://10709832145",
+			["more-horizontal"] = "rbxassetid://10709832258",
+			["more-vertical"] = "rbxassetid://10709832357",
+			["mountain"] = "rbxassetid://10709832594",
+			["mountain-snow"] = "rbxassetid://10709832463",
+			["mouse"] = "rbxassetid://10709832819",
+			["mouse-pointer"] = "rbxassetid://10709832724",
+			["mouse-pointer2"] = "rbxassetid://10709832661",
+			["mouse-pointer-click"] = "rbxassetid://10709832896",
+			["move"] = "rbxassetid://10709833230",
+			["move3d"] = "rbxassetid://10709833010",
+			["movehorizontal"] = "rbxassetid://10709833110",
+			["movevertical"] = "rbxassetid://10709833177",
+			["music"] = "rbxassetid://10709833325",
+			["network"] = "rbxassetid://10709833446",
+			["newspaper"] = "rbxassetid://10709833543",
+			["octagon"] = "rbxassetid://10709833637",
+			["option"] = "rbxassetid://10709833729",
+			["outdent"] = "rbxassetid://10709833830",
+			["package"] = "rbxassetid://10709834227",
+			["package2"] = "rbxassetid://10709833924",
+			["packagecheck"] = "rbxassetid://10709834011",
+			["packageminus"] = "rbxassetid://10709834091",
+			["packageplus"] = "rbxassetid://10709834154",
+			["packagex"] = "rbxassetid://10709834316",
+			["palette"] = "rbxassetid://10709834421",
+			["palmtree"] = "rbxassetid://10709834522",
+			["paperclip"] = "rbxassetid://10709834615",
+			["party-popper"] = "rbxassetid://10709834717",
+			["pause"] = "rbxassetid://10709835003",
+			["pausecircle"] = "rbxassetid://10709834811",
+			["pauseoctagon"] = "rbxassetid://10709834913",
+			["pen-tool"] = "rbxassetid://10709835105",
+			["pencil"] = "rbxassetid://10709835211",
+			["percent"] = "rbxassetid://10709835307",
+			["phone"] = "rbxassetid://10709835900",
+			["phonecall"] = "rbxassetid://10709835405",
+			["phoneforwarded"] = "rbxassetid://10709835496",
+			["phoneincoming"] = "rbxassetid://10709835592",
+			["phonemissed"] = "rbxassetid://10709835680",
+			["phoneoff"] = "rbxassetid://10709835767",
+			["phoneoutgoing"] = "rbxassetid://10709835840",
+			["pie-chart"] = "rbxassetid://10709836015",
+			["piggy-bank"] = "rbxassetid://10709836113",
+			["pipette"] = "rbxassetid://10709836214",
+			["pizza"] = "rbxassetid://10709836306",
+			["plane"] = "rbxassetid://10709836407",
+			["play"] = "rbxassetid://10709836611",
+			["playcircle"] = "rbxassetid://10709836506",
+			["plus"] = "rbxassetid://10709836932",
+			["pluscircle"] = "rbxassetid://10709836725",
+			["plussquare"] = "rbxassetid://10709836830",
+			["pocket"] = "rbxassetid://10709837033",
+			["podcast"] = "rbxassetid://10709837119",
+			["pointer"] = "rbxassetid://10709837220",
+			["pound-sterling"] = "rbxassetid://10709837311",
+			["power"] = "rbxassetid://10709837500",
+			["poweroff"] = "rbxassetid://10709837417",
+			["printer"] = "rbxassetid://10709837603",
+			["puzzle"] = "rbxassetid://10709837706",
+			["qr-code"] = "rbxassetid://10709837803",
+			["quote"] = "rbxassetid://10709837910",
+			["radio"] = "rbxassetid://10709838210",
+			["radio-receiver"] = "rbxassetid://10709838023",
+			["radio-tower"] = "rbxassetid://10709838118",
+			["refrigerator"] = "rbxassetid://10709838321",
+			["refresh-ccw"] = "rbxassetid://10709838423",
+			["refresh-cw"] = "rbxassetid://10709838531",
+			["regex"] = "rbxassetid://10709838618",
+			["repeat"] = "rbxassetid://10709838843",
+			["repeat-1"] = "rbxassetid://10709838740",
+			["reply"] = "rbxassetid://10709839055",
+			["reply-all"] = "rbxassetid://10709838947",
+			["rewind"] = "rbxassetid://10709839151",
+			["rocket"] = "rbxassetid://10709839254",
+			["rotate-ccw"] = "rbxassetid://10709839352",
+			["rotate-cw"] = "rbxassetid://10709839446",
+			["rss"] = "rbxassetid://10709839551",
+			["ruler"] = "rbxassetid://10709839648",
+			["russian-ruble"] = "rbxassetid://10709839733",
+			["save"] = "rbxassetid://10709839841",
+			["scale"] = "rbxassetid://10709839951",
+			["scan"] = "rbxassetid://10709840156",
+			["scan-face"] = "rbxassetid://10709840056",
+			["scissors"] = "rbxassetid://10709840250",
+			["screen-share"] = "rbxassetid://10709840455",
+			["screen-share-off"] = "rbxassetid://10709840348",
+			["search"] = "rbxassetid://10709840552",
+			["send"] = "rbxassetid://10709840645",
+			["separator-horizontal"] = "rbxassetid://10709840748",
+			["separator-vertical"] = "rbxassetid://10709840854",
+			["server"] = "rbxassetid://10709841315",
+			["servercog"] = "rbxassetid://10709840944",
+			["servercrash"] = "rbxassetid://10709841051",
+			["serveroff"] = "rbxassetid://10709841147",
+			["settings"] = "rbxassetid://10709841530",
+			["settings2"] = "rbxassetid://10709841416",
+			["share"] = "rbxassetid://10709841753",
+			["share2"] = "rbxassetid://10709841648",
+			["sheet"] = "rbxassetid://10709841865",
+			["shield"] = "rbxassetid://10709842240",
+			["shieldalert"] = "rbxassetid://10709841961",
+			["shieldcheck"] = "rbxassetid://10709842060",
+			["shieldoff"] = "rbxassetid://10709842149",
+			["shirt"] = "rbxassetid://10709842340",
+			["shopping-bag"] = "rbxassetid://10709842436",
+			["shopping-cart"] = "rbxassetid://10709842531",
+			["shovel"] = "rbxassetid://10709842634",
+			["shower-head"] = "rbxassetid://10709842735",
+			["shrink"] = "rbxassetid://10709842825",
+			["shrub"] = "rbxassetid://10709842918",
+			["shuffle"] = "rbxassetid://10709843003",
+			["sidebar"] = "rbxassetid://10709843343",
+			["sidebarclose"] = "rbxassetid://10709843111",
+			["sidebaropen"] = "rbxassetid://10709843232",
+			["sigma"] = "rbxassetid://10709843439",
+			["signal"] = "rbxassetid://10709843849",
+			["signalhigh"] = "rbxassetid://10709843534",
+			["signallow"] = "rbxassetid://10709843640",
+			["signalmedium"] = "rbxassetid://10709843750",
+			["signalzero"] = "rbxassetid://10709843956",
+			["siren"] = "rbxassetid://10709844053",
+			["skip-back"] = "rbxassetid://10709844144",
+			["skip-forward"] = "rbxassetid://10709844238",
+			["skull"] = "rbxassetid://10709844336",
+			["slack"] = "rbxassetid://10709844431",
+			["slash"] = "rbxassetid://10709844530",
+			["slice"] = "rbxassetid://10709844648",
+			["sliders"] = "rbxassetid://10709844747",
+			["smartphone"] = "rbxassetid://10709845059",
+			["smartphonecharging"] = "rbxassetid://10709844855",
+			["smile"] = "rbxassetid://10709845155",
+			["snowflake"] = "rbxassetid://10709845265",
+			["sofa"] = "rbxassetid://10709845366",
+			["speaker"] = "rbxassetid://10709845474",
+			["sprout"] = "rbxassetid://10709845564",
+			["square"] = "rbxassetid://10709845648",
+			["star"] = "rbxassetid://10709845851",
+			["starhalf"] = "rbxassetid://10709845743",
+			["staroff"] = "rbxassetid://10709845942",
+			["stethoscope"] = "rbxassetid://10709846051",
+			["sticker"] = "rbxassetid://10709846152",
+			["sticky-note"] = "rbxassetid://10709846244",
+			["stop-circle"] = "rbxassetid://10709846351",
+			["stretch-horizontal"] = "rbxassetid://10709846452",
+			["stretch-vertical"] = "rbxassetid://10709846554",
+			["strikethrough"] = "rbxassetid://10709846664",
+			["subscript"] = "rbxassetid://10709846747",
+			["sun"] = "rbxassetid://10709846944",
+			["sundim"] = "rbxassetid://10709846830",
+			["sunmedium"] = "rbxassetid://10709847055",
+			["sunmoon"] = "rbxassetid://10709847144",
+			["superscript"] = "rbxassetid://10709847244",
+			["swiss-cone"] = "rbxassetid://10709847347",
+			["switch-camera"] = "rbxassetid://10709847436",
+			["sword"] = "rbxassetid://10709847535",
+			["swords"] = "rbxassetid://10709847644",
+			["syringe"] = "rbxassetid://10709847743",
+			["table"] = "rbxassetid://10709847842",
+			["tablet"] = "rbxassetid://10709847942",
+			["tag"] = "rbxassetid://10709848054",
+			["tags"] = "rbxassetid://10709848152",
+			["target"] = "rbxassetid://10709848245",
+			["tent"] = "rbxassetid://10709848356",
+			["terminal"] = "rbxassetid://10709848550",
+			["terminalsquare"] = "rbxassetid://10709848444",
+			["text-cursor"] = "rbxassetid://10709848761",
+			["text-cursor-input"] = "rbxassetid://10709848654",
+			["thermometer"] = "rbxassetid://10709848981",
+			["thermometersnow"] = "rbxassetid://10709848849",
+			["thermometersun"] = "rbxassetid://10709848918",
+			["thumbs-down"] = "rbxassetid://10709849090",
+			["thumbs-up"] = "rbxassetid://10709849187",
+			["ticket"] = "rbxassetid://10709849285",
+			["timer"] = "rbxassetid://10709849514",
+			["timerreset"] = "rbxassetid://10709849363",
+			["timeroff"] = "rbxassetid://10709849444",
+			["toggle-left"] = "rbxassetid://10709849603",
+			["toggle-right"] = "rbxassetid://10709849704",
+			["tornado"] = "rbxassetid://10709849791",
+			["toy-brick"] = "rbxassetid://10709849887",
+			["train"] = "rbxassetid://10709849981",
+			["trash"] = "rbxassetid://10709850189",
+			["trash2"] = "rbxassetid://10709850074",
+			["tree-pine"] = "rbxassetid://10709850284",
+			["trees"] = "rbxassetid://10709850383",
+			["trello"] = "rbxassetid://10709850478",
+			["trending-down"] = "rbxassetid://10709850570",
+			["trending-up"] = "rbxassetid://10709850682",
+			["triangle"] = "rbxassetid://10709850774",
+			["trophy"] = "rbxassetid://10709850884",
+			["truck"] = "rbxassetid://10709850989",
+			["tv"] = "rbxassetid://10709851214",
+			["tv2"] = "rbxassetid://10709851100",
+			["twitch"] = "rbxassetid://10709851310",
+			["twitter"] = "rbxassetid://10709851416",
+			["type"] = "rbxassetid://10709851512",
+			["umbrella"] = "rbxassetid://10709851608",
+			["underline"] = "rbxassetid://10709851711",
+			["undo"] = "rbxassetid://10709851908",
+			["undo2"] = "rbxassetid://10709851806",
+			["unlink"] = "rbxassetid://10709852110",
+			["unlink2"] = "rbxassetid://10709852003",
+			["unlock"] = "rbxassetid://10709852208",
+			["upload"] = "rbxassetid://10709852433",
+			["upload-cloud"] = "rbxassetid://10709852335",
+			["usb"] = "rbxassetid://10709852538",
+			["user"] = "rbxassetid://10709853034",
+			["usercheck"] = "rbxassetid://10709852636",
+			["usercog"] = "rbxassetid://10709852735",
+			["userminus"] = "rbxassetid://10709852822",
+			["userplus"] = "rbxassetid://10709852924",
+			["userx"] = "rbxassetid://10709853130",
+			["users"] = "rbxassetid://10709853221",
+			["utensils"] = "rbxassetid://10709853416",
+			["utensilscrossed"] = "rbxassetid://10709853322",
+			["venetian-mask"] = "rbxassetid://10709853509",
+			["vibrate"] = "rbxassetid://10709853609",
+			["video"] = "rbxassetid://10709853820",
+			["videooff"] = "rbxassetid://10709853716",
+			["view"] = "rbxassetid://10709853915",
+			["voicemail"] = "rbxassetid://10709854019",
+			["volume"] = "rbxassetid://10709854432",
+			["volume1"] = "rbxassetid://10709854122",
+			["volume2"] = "rbxassetid://10709854236",
+			["volumex"] = "rbxassetid://10709854341",
+			["wallet"] = "rbxassetid://10709854536",
+			["wand"] = "rbxassetid://10709854743",
+			["wand2"] = "rbxassetid://10709854637",
+			["watch"] = "rbxassetid://10709854838",
+			["waves"] = "rbxassetid://10709854930",
+			["webcam"] = "rbxassetid://10709855026",
+			["wifi"] = "rbxassetid://10709855348",
+			["wifioff"] = "rbxassetid://10709855132",
+			["wind"] = "rbxassetid://10709855447",
+			["wrap-text"] = "rbxassetid://10709855546",
+			["wrench"] = "rbxassetid://10709855642",
+			["x"] = "rbxassetid://10709855948",
+			["xcircle"] = "rbxassetid://10709855740",
+			["xoctagon"] = "rbxassetid://10709855835",
+			["xsquare"] = "rbxassetid://10709855890",
+			["youtube"] = "rbxassetid://10709856038",
+			["zap"] = "rbxassetid://10709856241",
+			["zapoff"] = "rbxassetid://10709856145",
+			["zoom-in"] = "rbxassetid://10709856353",
+			["zoom-out"] = "rbxassetid://10709856455"
+		}
+	end)()
+}
+
+local UIScale = 1
+local Flags = {}
+local Settings = redzlib.Settings
+
+local Create = function(Ele, parent, props, children)
+	local Instance = Instance.new(Ele)
+	if parent then
+		if type(parent) == "table" then
+			children = parent
+		else
+			Instance.Parent = parent
+		end
+	end
+	if props then
+		for prop, val in pairs(props) do
+			Instance[prop] = val
+		end
+	end
+	if children then
+		for _, child in pairs(children) do
+			child.Parent = Instance
+		end
+	end
+	return Instance
+end
+
+local SetProps = function(Instance, props)
+	if props then
+		for prop, val in pairs(props) do
+			Instance[prop] = val
+		end
+	end
+	return Instance
+end
+
+local GetColor = function(Instance)
+	if Instance:IsA("TextLabel") or Instance:IsA("TextButton") or Instance:IsA("TextBox") then
+		return "TextColor3"
+	elseif Instance:IsA("ImageLabel") or Instance:IsA("ImageButton") then
+		return "ImageColor3"
+	elseif Instance:IsA("UIStroke") then
+		return "Color"
+	elseif Instance:IsA("ScrollingFrame") then
+		return "ScrollBarImageColor3"
+	end
+	return "BackgroundColor3"
+end
+
+local InsertTheme = function(Instance, Type)
+	table.insert(redzlib.Instances, {Instance = Instance, Type = Type})
+	return Instance
+end
+
+local Funcs = {} do
+	function Funcs:ToggleVisible(Instance, ...)
+		local args = {...}
+		Instance.Visible = args[1] ~= nil and args[1] or not Instance.Visible
+	end
+	
+	function Funcs:GetConnectionFunctions(List, func)
+		local Connection = {}
+		function Connection:Disconnect()
+			for i,v in pairs(List) do
+				if v == func then
+					table.remove(List, i)
+				end
+			end
+		end
+		return Connection
+	end
+	
+	function Funcs:InsertCallback(Callback, ...)
+		local args = {...}
+		return function(...)
+			for _,func in pairs(Callback) do
+				task.spawn(func, ...)
+			end
+		end
+	end
+	
+	function Funcs:FireCallback(Callback, ...)
+		for _,func in pairs(Callback) do
+			task.spawn(func, ...)
+		end
+	end
+	
+	function Funcs:GetCallback(Configs, index)
+		local func = Configs[index] or Configs.Callback or function()end
+		
+		if type(func) == "table" then
+			return ({function(Value) func[1][func[2]] = Value end})
+		end
+		return {func}
+	end
+end
+
+local Connections, Connection = {}, redzlib.Connection do
+	local function NewConnectionList(List)
+		if type(List) ~= "table" then return end
+		
+		for _,CoName in ipairs(List) do
+			local ConnectedFuncs, Connect = {}, {}
+			Connection[CoName] = Connect
+			Connections[CoName] = ConnectedFuncs
+			Connect.Name = CoName
+			
+			function Connect:Connect(func)
+				if type(func) == "function" then
+					table.insert(ConnectedFuncs, func)
+					return Funcs:GetConnectionFunctions(ConnectedFuncs, func)
+				end
+			end
+			
+			function Connect:Once(func)
+				if type(func) == "function" then
+					local Connected;
+					
+					local _NFunc;_NFunc = function(...)
+						task.spawn(func, ...)
+						Connected:Disconnect()
+					end
+					
+					Connected = Funcs:GetConnectionFunctions(ConnectedFuncs, _NFunc)
+					return Connected
+				end
+			end
+		end
+	end
+	
+	function Connection:FireConnection(CoName, ...)
+		local Connection = type(CoName) == "string" and Connections[CoName] or Connections[CoName.Name]
+		for _,Func in pairs(Connection) do
+			task.spawn(Func, ...)
+		end
+	end
+	
+	NewConnectionList({"FlagsChanged", "ThemeChanged", "FileSaved", "ThemeChanging", "OptionAdded"})
+end
+
+local GetFlag, SetFlag, CheckFlag do
+	CheckFlag = function(Name)
+		return type(Name) == "string" and Flags[Name] ~= nil
+	end
+	
+	GetFlag = function(Name)
+		return type(Name) == "string" and Flags[Name]
+	end
+	
+	SetFlag = function(Flag, Value)
+		if Flag and (Value ~= Flags[Flag] or type(Value) == "table") then
+			Flags[Flag] = Value
+			Connection:FireConnection("FlagsChanged", Flag, Value)
+		end
+	end
+	
+	local db
+	Connection.FlagsChanged:Connect(function(Flag, Value)
+		local ScriptFile = Settings.ScriptFile
+		if not db and ScriptFile and writefile then
+			db=true;task.wait(0.1);db=false
+			
+			local Success, Encoded = pcall(function()
+				return HttpService:JSONEncode(Flags)
+			end)
+			
+			if Success then
+				local Success = pcall(writefile, ScriptFile, Encoded)
+				if Success then
+					Connection:FireConnection("FileSaved", "Script-Flags", ScriptFile, Encoded)
+				end
+			end
+		end
+	end)
+end
+
+local ScreenGui = Create("ScreenGui", CoreGui, {
+	Name = "redz Library V5",
+}, {
+	Create("UIScale", {
+		Scale = UIScale,
+		Name = "Scale"
+	})
+})
+
+local ScreenFind = CoreGui:FindFirstChild(ScreenGui.Name)
+if ScreenFind and ScreenFind ~= ScreenGui then
+	ScreenFind:Destroy()
+end
+
+local function GetStr(val)
+	if type(val) == "function" then
+		return val()
+	end
+	return val
+end
+
+local function ConnectSave(Instance, func)
+	Instance.InputBegan:Connect(function(Input)
+		if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+			while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do task.wait()
+			end
+		end
+		func()
+	end)
+end
+
+local function CreateTween(Configs)
+	local Instance = Configs[1] or Configs.Instance
+	local Prop = Configs[2] or Configs.Prop
+	local NewVal = Configs[3] or Configs.NewVal
+	local Time = Configs[4] or Configs.Time or 0.5
+	local TweenWait = Configs[5] or Configs.wait or false
+	local TweenInfo = TweenInfo.new(Time, Enum.EasingStyle.Quint)
+	
+	local Tween = TweenService:Create(Instance, TweenInfo, {[Prop] = NewVal})
+	Tween:Play()
+	if TweenWait then
+		Tween.Completed:Wait()
+	end
+	return Tween
+end
+
+local function MakeDrag(Instance)
+	task.spawn(function()
+		SetProps(Instance, {
+			Active = true,
+			AutoButtonColor = false
+		})
+		
+		local DragStart, StartPos, InputOn
+		
+		local function Update(Input)
+			local delta = Input.Position - DragStart
+			local Position = UDim2.new(StartPos.X.Scale, StartPos.X.Offset + delta.X / UIScale, StartPos.Y.Scale, StartPos.Y.Offset + delta.Y / UIScale)
+			CreateTween({Instance, "Position", Position, 0.35})
+		end
+		
+		Instance.MouseButton1Down:Connect(function()
+			InputOn = true
+		end)
+		
+		Instance.InputBegan:Connect(function(Input)
+			if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+				StartPos = Instance.Position
+				DragStart = Input.Position
+				
+				while UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do RunService.Heartbeat:Wait()
+					if InputOn then
+						Update(Input)
+					end
+				end
+				InputOn = false
+			end
+		end)
+	end)
+	return Instance
+end
+
+local function VerifyTheme(Theme)
+	for name,_ in pairs(redzlib.Themes) do
+		if name == Theme then
+			return true
+		end
+	end
+end
+
+local function SaveJson(FileName, save)
+	if writefile then
+		local json = HttpService:JSONEncode(save)
+		writefile(FileName, json)
+	end
+end
+
+local Theme = redzlib.Themes[redzlib.Save.Theme]
+
+local function AddEle(Name, Func)
+	redzlib.Elements[Name] = Func
+end
+
+local function Make(Ele, Instance, props, ...)
+	local Element = redzlib.Elements[Ele](Instance, props, ...)
+	return Element
+end
+
+AddEle("Corner", function(parent, CornerRadius)
+	local New = SetProps(Create("UICorner", parent, {
+		CornerRadius = CornerRadius or UDim.new(0, 7)
+	}), props)
+	return New
+end)
+
+AddEle("Stroke", function(parent, props, ...)
+	local args = {...}
+	local New = InsertTheme(SetProps(Create("UIStroke", parent, {
+		Color = args[1] or Theme["Color Stroke"],
+		Thickness = args[2] or 1,
+		ApplyStrokeMode = "Border"
+	}), props), "Stroke")
+	return New
+end)
+
+AddEle("Button", function(parent, props, ...)
+	local args = {...}
+	local New = InsertTheme(SetProps(Create("TextButton", parent, {
+		Text = "",
+		Size = UDim2.fromScale(1, 1),
+		BackgroundColor3 = Theme["Color Hub 2"],
+		AutoButtonColor = false
+	}), props), "Frame")
+	
+	New.MouseEnter:Connect(function()
+		New.BackgroundTransparency = 0.4
+	end)
+	New.MouseLeave:Connect(function()
+		New.BackgroundTransparency = 0
+	end)
+	if args[1] then
+		New.Activated:Connect(args[1])
+	end
+	return New
+end)
+
+AddEle("Gradient", function(parent, props, ...)
+	local args = {...}
+	local New = InsertTheme(SetProps(Create("UIGradient", parent, {
+		Color = Theme["Color Hub 1"]
+	}), props), "Gradient")
+	return New
+end)
+
+local function ButtonFrame(Instance, Title, Description, HolderSize)
+	local TitleL = InsertTheme(Create("TextLabel", {
+		Font = Enum.Font.GothamMedium,
+		TextColor3 = Theme["Color Text"],
+		Size = UDim2.new(1, -20),
+		AutomaticSize = "Y",
+		Position = UDim2.new(0, 0, 0.5),
+		AnchorPoint = Vector2.new(0, 0.5),
+		BackgroundTransparency = 1,
+		TextTruncate = "AtEnd",
+		TextSize = 10,
+		TextXAlignment = "Left",
+		Text = "",
+		RichText = true
+	}), "Text")
+	
+	local DescL = InsertTheme(Create("TextLabel", {
+		Font = Enum.Font.Gotham,
+		TextColor3 = Theme["Color Dark Text"],
+		Size = UDim2.new(1, -20),
+		AutomaticSize = "Y",
+		Position = UDim2.new(0, 12, 0, 15),
+		BackgroundTransparency = 1,
+		TextWrapped = true,
+		TextSize = 8,
+		TextXAlignment = "Left",
+		Text = "",
+		RichText = true
+	}), "DarkText")
+
+	local Frame = Make("Button", Instance, {
+		Size = UDim2.new(1, 0, 0, 25),
+		AutomaticSize = "Y",
+		Name = "Option"
+	})Make("Corner", Frame, UDim.new(0, 6))
+	
+	-- Adicionando ícone do mouse ao ButtonFrame conforme solicitado
+	local MouseIcon = Create("ImageLabel", Frame, {
+		Size = UDim2.fromOffset(14, 14),
+		Position = UDim2.new(1, -10, 0.5),
+		AnchorPoint = Vector2.new(1, 0.5),
+		BackgroundTransparency = 1,
+		Image = "rbxassetid://10709832819", -- Ícone do mouse
+		ImageColor3 = Theme["Color Theme"]
+	})
+	
+	LabelHolder = Create("Frame", Frame, {
+		AutomaticSize = "Y",
+		BackgroundTransparency = 1,
+		Size = HolderSize,
+		Position = UDim2.new(0, 10, 0),
+		AnchorPoint = Vector2.new(0, 0)
+	}, {
+		Create("UIListLayout", {
+			SortOrder = "LayoutOrder",
+			VerticalAlignment = "Center",
+			Padding = UDim.new(0, 2)
+		}),
+		Create("UIPadding", {
+			PaddingBottom = UDim.new(0, 5),
+			PaddingTop = UDim.new(0, 5)
+		}),
+		TitleL,
+		DescL,
+	})
+	
+	local Label = {}
+	function Label:SetTitle(NewTitle)
+		if type(NewTitle) == "string" and NewTitle:gsub(" ", ""):len() > 0 then
+			TitleL.Text = NewTitle
+		end
+	end
+	function Label:SetDesc(NewDesc)
+		if type(NewDesc) == "string" and NewDesc:gsub(" ", ""):len() > 0 then
+			DescL.Text = NewDesc
+		end
+	end
+	Label:SetTitle(Title)
+	Label:SetDesc(Description)
+	return Frame, Label
+end
+
+function redzlib:SetTheme(NewTheme)
+	if not VerifyTheme(NewTheme) then return end
+	redzlib.Save.Theme = NewTheme
+	Theme = redzlib.Themes[NewTheme]
+	
+	Comnection:FireConnection("ThemeChanged", NewTheme)
+	table.foreach(redzlib.Instances, function(_,Val)
+		if Val.Type == "Gradient" then
+			Val.Instance.Color = Theme["Color Hub 1"]
+		elseif Val.Type == "Frame" then
+			Val.Instance.BackgroundColor3 = Theme["Color Hub 2"]
+		elseif Val.Type == "Stroke" then
+			Val.Instance[GetColor(Val.Instance)] = Theme["Color Stroke"]
+		elseif Val.Type == "Theme" then
+			Val.Instance[GetColor(Val.Instance)] = Theme["Color Theme"]
+		elseif Val.Type == "Text" then
+			Val.Instance[GetColor(Val.Instance)] = Theme["Color Text"]
+		elseif Val.Type == "DarkText" then
+			Val.Instance[GetColor(Val.Instance)] = Theme["Color Dark Text"]
+		elseif Val.Type == "ScrollBar" then
+			Val.Instance[GetColor(Val.Instance)] = Theme["Color Theme"]
+		end
+	end)
+end
+
+function redzlib:SetScale(NewScale)
+	UIScale = NewScale
+	ScreenGui.Scale.Scale = NewScale
+end
+
+function redzlib:MakeWindow(Configs)
+	local WTitle = Configs[1] or Configs.Name or Configs.Title or "redz Library V5"
+	local WMiniText = Configs[2] or Configs.SubTitle or "by : redz9999"
+	
+	Settings.ScriptFile = Configs[3] or Configs.SaveFolder or false
+	
+	local function LoadFile()
+		local File = Settings.ScriptFile
+		if type(File) ~= "string" then return end
+		if not readfile or not isfile then return end
+		local s, r = pcall(isfile, File)
+		
+		if s and r then
+			local s, _Flags = pcall(readfile, File)
+			
+			if s and type(_Flags) == "string" then
+				local s,r = pcall(function() return HttpService:JSONDecode(_Flags) end)
+				Flags = s and r or {}
+			end
+		end
+	end;LoadFile()
+	
+	local UISizeX, UISizeY = unpack(redzlib.Save.UISize)
+	local MainFrame = InsertTheme(Create("ImageButton", ScreenGui, {
+		Size = UDim2.fromOffset(UISizeX, UISizeY),
+		Position = UDim2.new(0.5, -UISizeX/2, 0.5, -UISizeY/2),
+		BackgroundTransparency = 0.2, -- Menu um pouco transparente conforme solicitado
+		Name = "Hub"
+	}), "Main")
+	
+	-- Gradiente Preto em cima e Branco embaixo
+	Make("Gradient", MainFrame, {
+		Rotation = 90,
+		Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0.00, Color3.fromRGB(0, 0, 0)),
+			ColorSequenceKeypoint.new(1.00, Color3.fromRGB(255, 255, 255))
+		})
+	})MakeDrag(MainFrame)
+	
+	local MainCorner = Make("Corner", MainFrame)
+	
+	-- Animação de bolinhas pequenas piscando de preto a branco caindo no menu
+	local BallCanvas = Create("Frame", MainFrame, {
+		Size = UDim2.fromScale(1, 1),
+		BackgroundTransparency = 1,
+		ClipsDescendants = true,
+		ZIndex = 0
+	})
+	
+	task.spawn(function()
+		while task.wait(0.4) do -- Intervalo para criar novas bolinhas
+			local Ball = Create("Frame", BallCanvas, {
+				Size = UDim2.fromOffset(4, 4),
+				Position = UDim2.fromScale(math.random(), -0.05),
+				BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+				BorderSizePixel = 0
+			})
+			Make("Corner", Ball, UDim.new(1, 0))
+			
+			-- Animação de piscar (Preto -> Branco -> Preto)
+			task.spawn(function()
+				while Ball and Ball.Parent do
+					CreateTween({Ball, "BackgroundColor3", Color3.fromRGB(255, 255, 255), 1, true})
+					CreateTween({Ball, "BackgroundColor3", Color3.fromRGB(0, 0, 0), 1, true})
+				end
+			end)
+			
+			-- Animação de cair lenta
+			local FallTween = CreateTween({Ball, "Position", UDim2.fromScale(Ball.Position.X.Scale, 1.1), 8})
+			FallTween.Completed:Connect(function()
+				Ball:Destroy()
+			end)
+		end
+	end)
+	
+	local Components = Create("Folder", MainFrame, {
+		Name = "Components"
+	})
+	
+	local DropdownHolder = Create("Folder", ScreenGui, {
+		Name = "Dropdown"
+	})
+	
+	local TopBar = Create("Frame", Components, {
+		Size = UDim2.new(1, 0, 0, 28),
+		BackgroundTransparency = 1,
+		Name = "Top Bar"
+	})
+	
+	local Title = InsertTheme(Create("TextLabel", TopBar, {
+		Position = UDim2.new(0, 15, 0.5),
+		AnchorPoint = Vector2.new(0, 0.5),
+		AutomaticSize = "XY",
+		Text = WTitle,
+		TextXAlignment = "Left",
+		TextSize = 12,
+		TextColor3 = Theme["Color Text"],
+		BackgroundTransparency = 1,
+		Font = Enum.Font.GothamMedium,
+		Name = "Title"
+	}, {
+		InsertTheme(Create("TextLabel", {
+			Size = UDim2.fromScale(0, 1),
+			AutomaticSize = "X",
+			AnchorPoint = Vector2.new(0, 1),
+			Position = UDim2.new(1, 5, 0.9),
+			Text = WMiniText,
+			TextColor3 = Theme["Color Dark Text"],
+			BackgroundTransparency = 1,
+			TextXAlignment = "Left",
+			TextYAlignment = "Bottom",
+			TextSize = 8,
+			Font = Enum.Font.Gotham,
+			Name = "SubTitle"
+		}), "DarkText")
+	}), "Text")
+	
+	local MainScroll = InsertTheme(Create("ScrollingFrame", Components, {
+		Size = UDim2.new(0, redzlib.Save.TabSize, 1, -TopBar.Size.Y.Offset),
+		ScrollBarImageColor3 = Theme["Color Theme"],
+		Position = UDim2.new(0, 0, 1, 0),
+		AnchorPoint = Vector2.new(0, 1),
+		ScrollBarThickness = 1.5,
+		BackgroundTransparency = 1,
+		ScrollBarImageTransparency = 0.2,
+		CanvasSize = UDim2.new(),
+		AutomaticCanvasSize = "Y",
+		ScrollingDirection = "Y",
+		BorderSizePixel = 0,
+		Name = "Tab Scroll"
+	}, {
+		Create("UIPadding", {
+			PaddingLeft = UDim.new(0, 10),
+			PaddingRight = UDim.new(0, 10),
+			PaddingTop = UDim.new(0, 10),
+			PaddingBottom = UDim.new(0, 10)
+		}), Create("UIListLayout", {
+			Padding = UDim.new(0, 5)
+		})
+	}), "ScrollBar")
+	
+	local Containers = Create("Frame", Components, {
+		Size = UDim2.new(1, -redzlib.Save.TabSize - 1, 1, -TopBar.Size.Y.Offset),
+		Position = UDim2.new(1, 0, 1, 0),
+		AnchorPoint = Vector2.new(1, 1),
+		BackgroundTransparency = 1,
+		Name = "Containers"
+	})
+	
+	local CloseButton = Create("ImageButton", TopBar, {
+		Size = UDim2.fromOffset(16, 16),
+		Position = UDim2.new(1, -10, 0.5),
+		AnchorPoint = Vector2.new(1, 0.5),
+		BackgroundTransparency = 1,
+		Image = "rbxassetid://10709855948",
+		ImageColor3 = Color3.fromRGB(255, 80, 80)
+	})
+	
+	local MinimizeButton = Create("ImageButton", TopBar, {
+		Size = UDim2.fromOffset(16, 16),
+		Position = UDim2.new(1, -32, 0.5),
+		AnchorPoint = Vector2.new(1, 0.5),
+		BackgroundTransparency = 1,
+		Image = "rbxassetid://10709831238",
+		ImageColor3 = Color3.fromRGB(255, 255, 255)
+	})
+	
+	local Window = {}
+	Window.MainFrame = MainFrame
+	Window.ScreenGui = ScreenGui
+	
+	function Window.CloseBtn()
+		ScreenGui:Destroy()
+	end
+	
+	function Window.MinimizeBtn()
+		MainFrame.Visible = not MainFrame.Visible
+	end
+	
+	local ContainerList = {}
+	function Window:MakeTab(Configs)
+		local TName = Configs[1] or Configs.Name or Configs.Title or "Tab"
+		local TIcon = Configs[2] or Configs.Icon or false
+		
+		local FirstTab = #ContainerList == 0
+		
+		local TabSelect = Create("TextButton", MainScroll, {
+			Size = UDim2.new(1, 0, 0, 25),
+			BackgroundTransparency = 1,
+			Text = "",
+			Name = "TabSelect"
+		})
+		
+		local TabIcon = Create("ImageLabel", TabSelect, {
+			Size = UDim2.fromOffset(14, 14),
+			Position = UDim2.new(0, 10, 0.5),
+			AnchorPoint = Vector2.new(0, 0.5),
+			BackgroundTransparency = 1,
+			Image = TIcon and (redzlib.Icons[TIcon] or TIcon) or "",
+			ImageTransparency = FirstTab and 0 or 0.4,
+			ImageColor3 = FirstTab and Theme["Color Theme"] or Theme["Color Text"]
+		})
+		
+		local TabTitle = Create("TextLabel", TabSelect, {
+			Size = UDim2.new(1, -35, 1, 0),
+			Position = UDim2.new(0, 30, 0),
+			BackgroundTransparency = 1,
+			Text = TName,
+			TextXAlignment = "Left",
+			Font = Enum.Font.GothamMedium,
+			TextSize = 10,
+			TextColor3 = FirstTab and Theme["Color Text"] or Theme["Color Dark Text"],
+			TextTransparency = FirstTab and 0 or 0.2
+		})
+		
+		local Selected = InsertTheme(Create("Frame", TabSelect, {
+			Size = FirstTab and UDim2.new(0, 4, 0, 4) or UDim2.new(0, 4, 0, 13),
+			Position = UDim2.new(0, 1, 0.5),
+			AnchorPoint = Vector2.new(0, 0.5),
+			BackgroundColor3 = Theme["Color Theme"],
+			BackgroundTransparency = FirstTab and 1 or 0
+		}), "Theme")Make("Corner", Selected, UDim.new(0.5, 0))
+		
+		local Container = InsertTheme(Create("ScrollingFrame", {
+			Size = UDim2.new(1, 0, 1, 0),
+			Position = UDim2.new(0, 0, 1),
+			AnchorPoint = Vector2.new(0, 1),
+			ScrollBarThickness = 1.5,
+			BackgroundTransparency = 1,
+			ScrollBarImageTransparency = 0.2,
+			ScrollBarImageColor3 = Theme["Color Theme"],
+			AutomaticCanvasSize = "Y",
+			ScrollingDirection = "Y",
+			BorderSizePixel = 0,
+			CanvasSize = UDim2.new(),
+			Name = ("Container %i [ %s ]"):format(#ContainerList + 1, TName)
+		}, {
+			Create("UIPadding", {
+				PaddingLeft = UDim.new(0, 10),
+				PaddingRight = UDim.new(0, 10),
+				PaddingTop = UDim.new(0, 10),
+				PaddingBottom = UDim.new(0, 10)
+			}), Create("UIListLayout", {
+				Padding = UDim.new(0, 5)
+			})
+		}), "ScrollBar")
+		
+		table.insert(ContainerList, {Container, TabSelect, TabIcon, TabTitle, Selected})
+		
+		local function Select()
+			for _,v in pairs(ContainerList) do
+				local _Container, _TabSelect, _TabIcon, _TabTitle, _Selected = unpack(v)
+				local IsThis = _Container == Container
+				
+				_Container.Visible = IsThis
+				_TabIcon.ImageTransparency = IsThis and 0 or 0.4
+				_TabIcon.ImageColor3 = IsThis and Theme["Color Theme"] or Theme["Color Text"]
+				_TabTitle.TextColor3 = IsThis and Theme["Color Text"] or Theme["Color Dark Text"]
+				_TabTitle.TextTransparency = IsThis and 0 or 0.2
+				
+				if IsThis then
+					CreateTween({_Selected, "Size", UDim2.new(0, 4, 0, 13), 0.2})
+					CreateTween({_Selected, "BackgroundTransparency", 0, 0.2})
+				else
+					CreateTween({_Selected, "Size", UDim2.new(0, 4, 0, 4), 0.2})
+					CreateTween({_Selected, "BackgroundTransparency", 1, 0.2})
+				end
+			end
+		end
+		
+		TabSelect.Activated:Connect(Select)
+		if FirstTab then Select() end
+		
+		local Tab = {}
+		function Tab:AddParagraph(Configs)
+			local PName = Configs[1] or Configs.Title or "Paragraph"
+			local PDesc = Configs[2] or Configs.Text or ""
+			
+			local Frame, LabelFunc = ButtonFrame(Container, PName, PDesc, UDim2.new(1, -20))
+			
+			local Paragraph = {}
+			function Paragraph:Visible(...) Funcs:ToggleVisible(Frame, ...) end
+			function Paragraph:Destroy() Frame:Destroy() end
+			function Paragraph:SetTitle(Val)
+				LabelFunc:SetTitle(GetStr(Val))
+			end
+			function Paragraph:SetDesc(Val)
+				LabelFunc:SetDesc(GetStr(Val))
+			end
+			return Paragraph
+		end
+		
+		function Tab:AddButton(Configs)
+			local BName = Configs[1] or Configs.Name or Configs.Title or "Button!"
+			local BDescription = Configs.Desc or Configs.Description or ""
+			local Callback = Funcs:GetCallback(Configs, 2)
+			
+			local FButton, LabelFunc = ButtonFrame(Container, BName, BDescription, UDim2.new(1, -20))
+			
+			local ButtonIcon = Create("ImageLabel", FButton, {
+				Size = UDim2.new(0, 14, 0, 14),
+				Position = UDim2.new(1, -10, 0.5),
+				AnchorPoint = Vector2.new(1, 0.5),
+				BackgroundTransparency = 1,
+				Image = "rbxassetid://10709791437"
+			})
+			
+			FButton.Activated:Connect(function()
+				Funcs:FireCallback(Callback)
+			end)
+			
+			local Button = {}
+			function Button:Visible(...) Funcs:ToggleVisible(FButton, ...) end
+			function Button:Destroy() FButton:Destroy() end
+			function Button:Callback(...) Funcs:InsertCallback(Callback, ...)() end
+			function Button:Set(Val1, Val2)
+				if type(Val1) == "string" and type(Val2) == "string" then
+					LabelFunc:SetTitle(Val1)
+					LabelFunc:SetDesc(Val2)
+				elseif type(Val1) == "string" then
+					LabelFunc:SetTitle(Val1)
+				elseif type(Val1) == "function" then
+					Callback = Val1
+				end
+			end
+			return Button
+		end
+		
+		function Tab:AddToggle(Configs)
+			local TName = Configs[1] or Configs.Name or Configs.Title or "Toggle"
+			local TDesc = Configs.Desc or Configs.Description or ""
+			local Callback = Funcs:GetCallback(Configs, 3)
+			local Flag = Configs[4] or Configs.Flag or false
+			local Default = Configs[2] or Configs.Default or false
+			if CheckFlag(Flag) then Default = GetFlag(Flag) end
+			
+			local Button, LabelFunc = ButtonFrame(Container, TName, TDesc, UDim2.new(1, -38))
+			
+			local ToggleHolder = InsertTheme(Create("Frame", Button, {
+				Size = UDim2.new(0, 35, 0, 18),
+				Position = UDim2.new(1, -10, 0.5),
+				AnchorPoint = Vector2.new(1, 0.5),
+				BackgroundColor3 = Theme["Color Stroke"]
+			}), "Stroke")Make("Corner", ToggleHolder, UDim.new(0.5, 0))
+			
+			local Slider = Create("Frame", ToggleHolder, {
+				BackgroundTransparency = 1,
+				Size = UDim2.new(0.8, 0, 0.8, 0),
+				Position = UDim2.new(0.5, 0, 0.5, 0),
+				AnchorPoint = Vector2.new(0.5, 0.5)
+			})
+			
+			local Toggle = InsertTheme(Create("Frame", Slider, {
+				Size = UDim2.new(0, 12, 0, 12),
+				Position = UDim2.new(0, 0, 0.5),
+				AnchorPoint = Vector2.new(0, 0.5),
+				BackgroundColor3 = Theme["Color Theme"]
+			}), "Theme")Make("Corner", Toggle, UDim.new(0.5, 0))
+			
+			local WaitClick
+			local function SetToggle(Val)
+				if WaitClick then return end
+				
+				WaitClick, Default = true, Val
+				SetFlag(Flag, Default)
+				Funcs:FireCallback(Callback, Default)
+				if Default then
+					CreateTween({Toggle, "Position", UDim2.new(1, 0, 0.5), 0.25})
+					CreateTween({Toggle, "BackgroundTransparency", 0, 0.25})
+					CreateTween({Toggle, "AnchorPoint", Vector2.new(1, 0.5), 0.25, Wait or false})
+				else
+					CreateTween({Toggle, "Position", UDim2.new(0, 0, 0.5), 0.25})
+					CreateTween({Toggle, "BackgroundTransparency", 0.8, 0.25})
+					CreateTween({Toggle, "AnchorPoint", Vector2.new(0, 0.5), 0.25, Wait or false})
+				end
+				WaitClick = false
+			end;task.spawn(SetToggle, Default)
+			
+			Button.Activated:Connect(function()
+				SetToggle(not Default)
+			end)
+			
+			local Toggle = {}
+			function Toggle:Visible(...) Funcs:ToggleVisible(Button, ...) end
+			function Toggle:Destroy() Button:Destroy() end
+			function Toggle:Callback(...) Funcs:InsertCallback(Callback, ...)() end
+			function Toggle:Set(Val1, Val2)
+				if type(Val1) == "string" and type(Val2) == "string" then
+					LabelFunc:SetTitle(Val1)
+					LabelFunc:SetDesc(Val2)
+				elseif type(Val1) == "string" then
+					LabelFunc:SetTitle(Val1, false, true)
+				elseif type(Val1) == "boolean" then
+					if WaitClick and Val2 then
+						repeat task.wait() until not WaitClick
+					end
+					task.spawn(SetToggle, Val1)
+				elseif type(Val1) == "function" then
+					Callback = Val1
+				end
+			end
+			return Toggle
+		end
+		
+		function Tab:AddDropdown(Configs)
+			local DName = Configs[1] or Configs.Name or Configs.Title or "Dropdown"
+			local DDesc = Configs.Desc or Configs.Description or ""
+			local DOptions = Configs[2] or Configs.Options or {}
+			local OpDefault = Configs[3] or Configs.Default or {}
+			local Flag = Configs[5] or Configs.Flag or false
+			local DMultiSelect = Configs.MultiSelect or false
+			local Callback = Funcs:GetCallback(Configs, 4)
+			
+			local Button, LabelFunc = ButtonFrame(Container, DName, DDesc, UDim2.new(1, -180))
+			
+			local SelectedFrame = InsertTheme(Create("Frame", Button, {
+				Size = UDim2.new(0, 150, 0, 18),
+				Position = UDim2.new(1, -10, 0.5),
+				AnchorPoint = Vector2.new(1, 0.5),
+				BackgroundColor3 = Theme["Color Stroke"]
+			}), "Stroke")Make("Corner", SelectedFrame, UDim.new(0, 4))
+			
+			local ActiveLabel = InsertTheme(Create("TextLabel", SelectedFrame, {
+				Size = UDim2.new(0.85, 0, 0.85, 0),
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Position = UDim2.new(0.5, 0, 0.5, 0),
+				BackgroundTransparency = 1,
+				Font = Enum.Font.GothamBold,
+				TextScaled = true,
+				TextColor3 = Theme["Color Text"],
+				Text = "..."
+			}), "Text")
+			
+			local Arrow = Create("ImageLabel", SelectedFrame, {
+				Size = UDim2.new(0, 15, 0, 15),
+				Position = UDim2.new(0, -5, 0.5),
+				AnchorPoint = Vector2.new(1, 0.5),
+				Image = "rbxassetid://10709791523",
+				BackgroundTransparency = 1
+			})
+			
+			local NoClickFrame = Create("TextButton", DropdownHolder, {
+				Name = "AntiClick",
+				Size = UDim2.new(1, 0, 1, 0),
+				BackgroundTransparency = 1,
+				Visible = false,
+				Text = ""
+			})
+			
+			local DropFrame = Create("Frame", NoClickFrame, {
+				Size = UDim2.new(SelectedFrame.Size.X, 0, 0),
+				BackgroundTransparency = 0.1,
+				BackgroundColor3 = Color3.fromRGB(255, 255, 255),
+				AnchorPoint = Vector2.new(0, 1),
+				Name = "DropdownFrame",
+				ClipsDescendants = true,
+				Active = true
+			})Make("Corner", DropFrame)Make("Stroke", DropFrame)Make("Gradient", DropFrame, {Rotation = 60})
+			
+			local ScrollFrame = InsertTheme(Create("ScrollingFrame", DropFrame, {
+				ScrollBarImageColor3 = Theme["Color Theme"],
+				Size = UDim2.new(1, 0, 1, 0),
+				ScrollBarThickness = 1.5,
+				BackgroundTransparency = 1,
+				BorderSizePixel = 0,
+				CanvasSize = UDim2.new(),
+				ScrollingDirection = "Y",
+				AutomaticCanvasSize = "Y",
+				Active = true
+			}, {
+				Create("UIPadding", {
+					PaddingLeft = UDim.new(0, 8),
+					PaddingRight = UDim.new(0, 8),
+					PaddingTop = UDim.new(0, 5),
+					PaddingBottom = UDim.new(0, 5)
+				}), Create("UIListLayout", {
+					Padding = UDim.new(0, 4)
+				})
+			}), "ScrollBar")
+			
+			local ScrollSize, WaitClick = 5
+			local function Disable()
+				WaitClick = true
+				CreateTween({Arrow, "Rotation", 0, 0.2})
+				CreateTween({DropFrame, "Size", UDim2.new(0, 152, 0, 0), 0.2, true})
+				CreateTween({Arrow, "ImageColor3", Color3.fromRGB(255, 255, 255), 0.2})
+				Arrow.Image = "rbxassetid://10709791523"
+				NoClickFrame.Visible = false
+				WaitClick = false
+			end
+			
+			local function GetFrameSize()
+				return UDim2.fromOffset(152, ScrollSize)
+			end
+			
+			local function CalculateSize()
+				local Count = 0
+				for _,Frame in pairs(ScrollFrame:GetChildren()) do
+					if Frame:IsA("Frame") or Frame.Name == "Option" then
+						Count = Count + 1
+					end
+				end
+				ScrollSize = (math.clamp(Count, 0, 10) * 25) + 10
+				if NoClickFrame.Visible then
+					NoClickFrame.Visible = true
+					CreateTween({DropFrame, "Size", GetFrameSize(), 0.2, true})
+				end
+			end
+			
+			local function Minimize()
+				if WaitClick then return end
+				WaitClick = true
+				if NoClickFrame.Visible then
+					Arrow.Image = "rbxassetid://10709791523"
+					CreateTween({Arrow, "ImageColor3", Color3.fromRGB(255, 255, 255), 0.2})
+					CreateTween({DropFrame, "Size", UDim2.new(0, 152, 0, 0), 0.2, true})
+					NoClickFrame.Visible = false
+				else
+					NoClickFrame.Visible = true
+					Arrow.Image = "rbxassetid://10709790948"
+					CreateTween({Arrow, "ImageColor3", Theme["Color Theme"], 0.2})
+					CreateTween({DropFrame, "Size", GetFrameSize(), 0.2, true})
+				end
+				WaitClick = false
+			end
+			
+			local function CalculatePos()
+				local FramePos = SelectedFrame.AbsolutePosition
+				local ScreenSize = ScreenGui.AbsoluteSize
+				local ClampX = math.clamp((FramePos.X / UIScale), 0, ScreenSize.X / UIScale - DropFrame.Size.X.Offset)
+				local ClampY = math.clamp((FramePos.Y / UIScale) , 0, ScreenSize.Y / UIScale)
+				
+				local NewPos = UDim2.fromOffset(ClampX, ClampY)
+				local AnchorPoint = FramePos.Y > ScreenSize.Y / 1.4 and 1 or ScrollSize > 80 and 0.5 or 0
+				DropFrame.AnchorPoint = Vector2.new(0, AnchorPoint)
+				CreateTween({DropFrame, "Position", NewPos, 0.1})
+			end
+			
+			local AddNewOptions, GetOptions, AddOption, RemoveOption, Selected do
+				local Default = type(OpDefault) ~= "table" and {OpDefault} or OpDefault
+				local MultiSelect = DMultiSelect
+				local Options = {}
+				Selected = MultiSelect and {} or CheckFlag(Flag) and GetFlag(Flag) or Default[1]
+				
+				if MultiSelect then
+					for index, Value in pairs(CheckFlag(Flag) and GetFlag(Flag) or Default) do
+						if type(index) == "string" and (DOptions[index] or table.find(DOptions, index)) then
+							Selected[index] = Value
+						elseif DOptions[Value] then
+							Selected[Value] = true
+						end
+					end
+				end
+				
+				local function CallbackSelected()
+					SetFlag(Flag, MultiSelect and Selected or tostring(Selected))
+					Funcs:FireCallback(Callback, Selected)
+				end
+				
+				local function UpdateLabel()
+					if MultiSelect then
+						local list = {}
+						for index, Value in pairs(Selected) do
+							if Value then
+								table.insert(list, index)
+							end
+						end
+						ActiveLabel.Text = #list > 0 and table.concat(list, ", ") or "..."
+					else
+						ActiveLabel.Text = tostring(Selected or "...")
+					end
+				end
+				
+				local function UpdateSelected()
+					if MultiSelect then
+						for _,v in pairs(Options) do
+							local nodes, Stats = v.nodes, v.Stats
+							CreateTween({nodes[2], "BackgroundTransparency", Stats and 0 or 0.8, 0.35})
+							CreateTween({nodes[2], "Size", Stats and UDim2.fromOffset(4, 12) or UDim2.fromOffset(4, 4), 0.35})
+							CreateTween({nodes[3], "TextTransparency", Stats and 0 or 0.4, 0.35})
+						end
+					else
+						for _,v in pairs(Options) do
+							local Slt = v.Value == Selected
+							local nodes = v.nodes
+							CreateTween({nodes[2], "BackgroundTransparency", Slt and 0 or 1, 0.35})
+							CreateTween({nodes[2], "Size", Slt and UDim2.fromOffset(4, 14) or UDim2.fromOffset(4, 4), 0.35})
+							CreateTween({nodes[3], "TextTransparency", Slt and 0 or 0.4, 0.35})
+						end
+					end
+					UpdateLabel()
+				end
+				
+				local function Select(Option)
+					if MultiSelect then
+						Option.Stats = not Option.Stats
+						Option.LastCB = tick()
+						
+						Selected[Option.Name] = Option.Stats
+						CallbackSelected()
+						UpdateSelected()
+					else
+						Selected = Option.Value
+						CallbackSelected()
+						UpdateSelected()
+						Minimize()
+					end
+				end
+				
+				function AddOption(Value)
+					local Name = tostring(Value)
+					local Option = {Value = Value, Name = Name}
+					
+					local Button = Create("TextButton", ScrollFrame, {
+						Size = UDim2.new(1, 0, 0, 25),
+						BackgroundTransparency = 1,
+						Text = "",
+						Name = "Option"
+					})
+					
+					local SelectedNode = InsertTheme(Create("Frame", Button, {
+						Size = UDim2.fromOffset(4, 4),
+						Position = UDim2.new(0, 1, 0.5),
+						AnchorPoint = Vector2.new(0, 0.5),
+						BackgroundColor3 = Theme["Color Theme"]
+					}), "Theme")Make("Corner", SelectedNode, UDim.new(0.5, 0))
+					
+					local Title = InsertTheme(Create("TextLabel", Button, {
+						Size = UDim2.new(1, -15, 1, 0),
+						Position = UDim2.new(0, 10, 0),
+						BackgroundTransparency = 1,
+						Text = Name,
+						TextXAlignment = "Left",
+						Font = Enum.Font.GothamMedium,
+						TextSize = 10,
+						TextColor3 = Theme["Color Text"]
+					}), "Text")
+					
+					Option.nodes = {Button, SelectedNode, Title}
+					if MultiSelect then
+						Option.Stats = Selected[Name] or false
+					end
+					
+					Button.Activated:Connect(function()
+						Select(Option)
+					end)
+					
+					table.insert(Options, Option)
+					CalculateSize()
+					UpdateSelected()
+				end
+				
+				function AddNewOptions(NewOptions)
+					for _,v in pairs(Options) do
+						v.nodes[1]:Destroy()
+					end
+					table.clear(Options)
+					for _,v in pairs(NewOptions) do
+						AddOption(v)
+					end
+				end
+				
+				function RemoveOption(Value)
+					for i,v in pairs(Options) do
+						if v.Value == Value then
+							v.nodes[1]:Destroy()
+							table.remove(Options, i)
+							break
+						end
+					end
+					CalculateSize()
+				end
+				
+				AddNewOptions(DOptions)
+				
+				local Dropdown = {}
+				function Dropdown:Add(Val) AddOption(Val) end
+				function Dropdown:Remove(Val) RemoveOption(Val) end
+				function Dropdown:Clear() AddNewOptions({}) end
+				function Dropdown:Set(Val)
+					if type(Val) == "table" then
+						AddNewOptions(Val)
+					else
+						Selected = Val
+						UpdateSelected()
+						CallbackSelected()
+					end
+				end
+			end
+			
+			SelectedFrame.InputBegan:Connect(function(Input)
+				if Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch then
+					CalculatePos()
+					Minimize()
+				end
+			end)
+			
+			NoClickFrame.Activated:Connect(Minimize)
+			return Dropdown
+		end
+		
+		function Tab:AddSlider(Configs)
+			local SName = Configs[1] or Configs.Name or Configs.Title or "Slider"
+			local SDesc = Configs.Desc or Configs.Description or ""
+			local Min = Configs[2] or Configs.Min or 0
+			local Max = Configs[3] or Configs.Max or 100
+			local Increase = Configs[4] or Configs.Increase or 1
+			local Callback = Funcs:GetCallback(Configs, 6)
+			local Flag = Configs[7] or Configs.Flag or false
+			local Default = Configs[5] or Configs.Default or 25
+			if CheckFlag(Flag) then Default = GetFlag(Flag) end
+			Min, Max = Min / Increase, Max / Increase
+			
+			local Button, LabelFunc = ButtonFrame(Container, SName, SDesc, UDim2.new(1, -180))
+			
+			local SliderHolder = Create("TextButton", Button, {
+				Size = UDim2.new(0.45, 0, 1),
+				Position = UDim2.new(1),
+				AnchorPoint = Vector2.new(1, 0),
+				AutoButtonColor = false,
+				Text = "",
+				BackgroundTransparency = 1
+			})
+			
+			local SliderBar = InsertTheme(Create("Frame", SliderHolder, {
+				Size = UDim2.new(0.8, 0, 0, 4),
+				BackgroundColor3 = Theme["Color Stroke"],
+				Position = UDim2.new(0.5, 0, 0.5),
+				AnchorPoint = Vector2.new(0.5, 0.5)
+			}), "Stroke")Make("Corner", SliderBar)
+			
+			local Indicator = InsertTheme(Create("Frame", SliderBar, {
+				BackgroundColor3 = Theme["Color Theme"],
+				Size = UDim2.fromScale(0.3, 1),
+				BorderSizePixel = 0
+			}), "Theme")Make("Corner", Indicator)
+			
+			local SliderIcon = Create("Frame", SliderBar, {
+				Size = UDim2.fromOffset(10, 10),
+				Position = UDim2.fromScale(0.3, 0.5),
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+			})Make("Corner", SliderIcon, UDim.new(1, 0))Make("Stroke", SliderIcon, {}, Color3.fromRGB(200, 200, 200), 2)
+			
+			local ValueLabel = InsertTheme(Create("TextLabel", SliderHolder, {
+				Size = UDim2.new(0, 30, 0, 15),
+				Position = UDim2.new(0, 5, 0.5),
+				AnchorPoint = Vector2.new(0, 0.5),
+				BackgroundTransparency = 1,
+				Text = "0",
+				Font = Enum.Font.GothamBold,
+				TextSize = 10,
+				TextColor3 = Theme["Color Text"]
+			}), "Text")
+			
+			local function SetValue(Val)
+				local Percent = (Val - Min) / (Max - Min)
+				Indicator.Size = UDim2.fromScale(Percent, 1)
+				SliderIcon.Position = UDim2.fromScale(Percent, 0.5)
+				ValueLabel.Text = tostring(Val * Increase)
+			end
+			
+			local function Update()
+				local MousePos = UserInputService:GetMouseLocation().X / UIScale
+				local BarPos = SliderBar.AbsolutePosition.X / UIScale
+				local BarSize = SliderBar.AbsoluteSize.X / UIScale
+				local Percent = math.clamp((MousePos - BarPos) / BarSize, 0, 1)
+				local Val = math.floor(Min + (Max - Min) * Percent)
+				SetValue(Val)
+				SetFlag(Flag, Val * Increase)
+				Funcs:FireCallback(Callback, Val * Increase)
+			end
+			
+			local Dragging = false
+			SliderHolder.MouseButton1Down:Connect(function()
+				Dragging = true
+				while Dragging do
+					Update()
+					RunService.RenderStepped:Wait()
+					if not UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) then
+						Dragging = false
+					end
+				end
+			end)
+			
+			SetValue(Default / Increase)
+			
+			local Slider = {}
+			function Slider:Set(Val)
+				SetValue(Val / Increase)
+				SetFlag(Flag, Val)
+				Funcs:FireCallback(Callback, Val)
+			end
+			return Slider
+		end
+		
+		function Tab:AddTextBox(Configs)
+			local TName = Configs[1] or Configs.Name or Configs.Title or "TextBox"
+			local TDesc = Configs.Desc or Configs.Description or ""
+			local TPlaceholder = Configs[2] or Configs.Placeholder or "Write here..."
+			local TDefault = Configs[3] or Configs.Default or ""
+			local Callback = Funcs:GetCallback(Configs, 4)
+			
+			if type(TDefault) ~= "string" or TDefault:gsub(" ", ""):len() < 1 then
+				TDefault = false
+			end
+			
+			local Button, LabelFunc = ButtonFrame(Container, TName, TDesc, UDim2.new(1, -38))
+			
+			local SelectedFrame = InsertTheme(Create("Frame", Button, {
+				Size = UDim2.new(0, 150, 0, 18),
+				Position = UDim2.new(1, -10, 0.5),
+				AnchorPoint = Vector2.new(1, 0.5),
+				BackgroundColor3 = Theme["Color Stroke"]
+			}), "Stroke")Make("Corner", SelectedFrame, UDim.new(0, 4))
+			
+			local TextBoxInput = InsertTheme(Create("TextBox", SelectedFrame, {
+				Size = UDim2.new(0.85, 0, 0.85, 0),
+				AnchorPoint = Vector2.new(0.5, 0.5),
+				Position = UDim2.new(0.5, 0, 0.5, 0),
+				BackgroundTransparency = 1,
+				Font = Enum.Font.GothamBold,
+				TextScaled = true,
+				TextColor3 = Theme["Color Text"],
+				Text = TDefault or "",
+				PlaceholderText = TPlaceholder
+			}), "Text")
+			
+			local Pencil = Create("ImageLabel", SelectedFrame, {
+				Size = UDim2.new(0, 15, 0, 15),
+				Position = UDim2.new(0, -5, 0.5),
+				AnchorPoint = Vector2.new(1, 0.5),
+				Image = "rbxassetid://10709835211",
+				BackgroundTransparency = 1
+			})
+			
+			TextBoxInput.FocusLost:Connect(function()
+				CreateTween({Pencil, "ImageColor3", Color3.fromRGB(255, 255, 255), 0.2})
+				Funcs:FireCallback(Callback, TextBoxInput.Text)
+			end)
+			TextBoxInput.Focused:Connect(function()
+				CreateTween({Pencil, "ImageColor3", Theme["Color Theme"], 0.2})
+			end)
+			
+			local TextBox = {}
+			function TextBox:Set(Val)
+				TextBoxInput.Text = tostring(Val)
+				Funcs:FireCallback(Callback, Val)
+			end
+			return TextBox
+		end
+		
+		function Tab:AddDiscordInvite(Configs)
+			local Title = Configs[1] or Configs.Title or "Discord Server"
+			local Desc = Configs[2] or Configs.Desc or "Join our community!"
+			local Invite = Configs[3] or Configs.Invite or ""
+			local Image = Configs[4] or Configs.Image or ""
+			
+			local InviteHolder = Create("Frame", Container, {
+				Size = UDim2.new(1, 0, 0, 85),
+				BackgroundTransparency = 1,
+				Name = "DiscordInvite"
+			})
+			
+			local FrameHolder = InsertTheme(Create("Frame", InviteHolder, {
+				Size = UDim2.new(1, 0, 0, 65),
+				AnchorPoint = Vector2.new(0, 1),
+				Position = UDim2.new(0, 0, 1),
+				BackgroundColor3 = Theme["Color Hub 2"]
+			}), "Frame")Make("Corner", FrameHolder)
+			
+			local ImageLabel = Create("ImageLabel", FrameHolder, {
+				Size = UDim2.new(0, 30, 0, 30),
+				Position = UDim2.new(0, 7, 0, 7),
+				BackgroundTransparency = 1,
+				Image = Image
+			})Make("Corner", ImageLabel, UDim.new(0, 5))
+			
+			local LTitle = InsertTheme(Create("TextLabel", FrameHolder, {
+				Size = UDim2.new(1, -52, 0, 15),
+				Position = UDim2.new(0, 44, 0, 7),
+				Font = Enum.Font.GothamBold,
+				TextColor3 = Theme["Color Text"],
+				TextXAlignment = "Left",
+				BackgroundTransparency = 1,
+				TextSize = 10,
+				Text = Title
+			}), "Text")
+			
+			local LDesc = InsertTheme(Create("TextLabel", FrameHolder, {
+				Size = UDim2.new(1, -52, 0, 0),
+				Position = UDim2.new(0, 44, 0, 22),
+				TextWrapped = "Y",
+				AutomaticSize = "Y",
+				Font = Enum.Font.Gotham,
+				TextColor3 = Theme["Color Dark Text"],
+				TextXAlignment = "Left",
+				BackgroundTransparency = 1,
+				TextSize = 8,
+				Text = Desc
+			}), "DarkText")
+			
+			local JoinButton = Create("TextButton", FrameHolder, {
+				Size = UDim2.new(1, -14, 0, 16),
+				AnchorPoint = Vector2.new(0.5, 1),
+				Position = UDim2.new(0.5, 0, 1, -7),
+				Text = "Join",
+				Font = Enum.Font.GothamBold,
+				TextSize = 12,
+				TextColor3 = Color3.fromRGB(220, 220, 220),
+				BackgroundColor3 = Color3.fromRGB(50, 150, 50)
+			})Make("Corner", JoinButton, UDim.new(0, 5))
+			
+			local ClickDelay
+			JoinButton.Activated:Connect(function()
+				setclipboard(Invite)
+				if ClickDelay then return end
+				
+				ClickDelay = true
+				SetProps(JoinButton, {
+					Text = "Copied to Clipboard",
+					BackgroundColor3 = Color3.fromRGB(100, 100, 100),
+					TextColor3 = Color3.fromRGB(150, 150, 150)
+				})task.wait(5)
+				SetProps(JoinButton, {
+					Text = "Join",
+					BackgroundColor3 = Color3.fromRGB(50, 150, 50),
+					TextColor3 = Color3.fromRGB(220, 220, 220)
+				})ClickDelay = false
+			end)
+			
+			local DiscordInvite = {}
+			function DiscordInvite:Destroy() InviteHolder:Destroy() end
+			function DiscordInvite:Visible(...) Funcs:ToggleVisible(InviteHolder, ...) end
+			return DiscordInvite
+		end
+		return Tab
+	end
+	
+	CloseButton.Activated:Connect(Window.CloseBtn)
+	MinimizeButton.Activated:Connect(Window.MinimizeBtn)
+	return Window
+end
+
+return redzlib
