@@ -119,7 +119,7 @@ end
 Tab1:AddButton({
 Name = "TikTok do Criador",
 Callback = function()
-setclipboard("https://www.tiktok.com/@medr0so_0.dev3?_r=1&_t=ZS-94YMEzV7UnJ")
+setclipboard("https://www.tiktok.com/@medr0so_0?_r=1&_t=ZS-95pg51NJeYz")
 
 Window:Dialog({
 Title = "TikTok do Criador",
