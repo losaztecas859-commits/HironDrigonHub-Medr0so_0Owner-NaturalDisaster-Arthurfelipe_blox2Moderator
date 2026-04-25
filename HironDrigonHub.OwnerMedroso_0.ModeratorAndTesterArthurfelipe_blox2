@@ -1,7 +1,7 @@
 
 -- ===== LOAD REDZ LIB =====
 local redzlib = loadstring(game:HttpGet(
-"https://raw.githubusercontent.com/losaztecas859-commits/Redz-library-v5.docs/refs/heads/main/testee2.lua"
+"https://raw.githubusercontent.com/nombrehumilde-cyber/Library/refs/heads/main/testee3"
 ))()
 
 redzlib:SetTheme({
